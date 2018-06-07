@@ -1,0 +1,66 @@
+/* CSS declarations go here */
+@font-face {
+  font-family: CONFUSION GIRL;
+  src: url('/fonts/CONFUSION GIRL.ttf');
+}
+h1 {
+    font-family: CONFUSION GIRL;
+    background-image: linear-gradient(to right, #d0edf5, pink 100%);
+    padding: 20px 15px 15px 15px;
+    width: relative;
+    height: 130px;
+}
+.theme {
+    font-family: CONFUSION GIRL;
+    font-size: 70px;
+    position: absolute;
+    left: 70px;
+}
+.subTheme {
+    font-size:40px;
+    color: grey;
+}
+img {
+  border: 5;
+}
+
+.descTheme {
+    font-family: arial;
+    font-size: 20px;
+    color: #CAC9C9;
+    position: relative;
+    left: 70px;
+    bottom: 30px;
+}
+
+.buttons button {
+  background-color: powderblue;
+  border-radius: 6px;
+  padding: 0px 0px;
+  cursor: pointer;
+  display: block;
+  width: 200px;
+  position: relative;
+  margin: 30px;
+}
+
+.buttons {
+  width: 800px;
+  margin: 0px auto;
+}
+
+.buttons button:hover {
+  background-color: #E7D1F7;
+}
+
+.buttonTop {
+  font-size: 30px;
+  font-family: helvetica;
+  margin: 0px;
+}
+
+.buttonBottom{
+  font-size: 18px;
+  bottom: 30px;
+  margin: 0px;
+}
