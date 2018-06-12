@@ -39,14 +39,20 @@ img {
   padding: 0px 0px;
   cursor: pointer;
   display: block;
-  width: 200px;
+  width: 400px;
   position: relative;
   margin: 30px;
 }
 
 .buttons {
-  margin-top: 50px;
   width: 800px;
+  margin: 0;
+  position: sticky;
+  left: 500px;
+}
+
+.buttons button:hover {
+  background-color: #E7D1F7;
 }
 
 .buttonTop {
