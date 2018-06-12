@@ -17,7 +17,7 @@ h1 {
     left: 70px;
 }
 .subTheme {
-    font-size:40px;
+    font-size:30px;
     color: grey;
 }
 img {
@@ -26,8 +26,8 @@ img {
 
 .descTheme {
     font-family: arial;
-    font-size: 20px;
-    color: #CAC9C9;
+    font-size: 15px;
+    color: #999999;
     position: relative;
     left: 70px;
     bottom: 30px;
@@ -45,12 +45,8 @@ img {
 }
 
 .buttons {
+  margin-top: 50px;
   width: 800px;
-  margin: 0px auto;
-}
-
-.buttons button:hover {
-  background-color: #E7D1F7;
 }
 
 .buttonTop {
