@@ -6,13 +6,7 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 
-  <link rel="stylesheet" href="colorPage.css" type="text/css" media="all">
-  <link rel="stylesheet" href="colorPick/colpick.css" type="text/css" media="all">
-
-  <script type="text/javascript" src="/node_modules/art-canvas/build/ArtCanvas.min.js"></script>
-  <script type="text/javascript" src="canvasScript.js" canvas="myCanvas"></script>
-  <script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
-  <script type="text/javascript" src="colorPick/colpick.js"></script>
+  <script src="html5kellycolorpicker.min.js"></script>
 
   <title> ZEN coloring </title>
 </head>
@@ -21,13 +15,12 @@
 	<h1>
 		<div class = "theme">
       ZEN COLORING
-    	</div>
-  	</h1>
+    </div>
+  </h1>
 	<div class="coloringBody">
 		<div class="vert-bar">
 			<canvas id="picker"></canvas><br>
-			<input id="color" value="#54aedb">
-			<script src="colorPick/colorPick.min.js"></script>
+			<input id="color" value="54aedb">
 			<script>
 				new KellyColorPicker({
 					place: 'picker',
@@ -37,8 +30,8 @@
 			</script>
 
 			<div class="pickButton">
-				<button id="button-brush" type="button">Brush</button>
-				<button id="button-fill" type="button">Fill</button>
+				<button>Brush</button>
+				<button>Fill</button>
 			</div>
 	  	<div class="sizeSlider">
 	    	<p> Brush size </p>
@@ -50,27 +43,24 @@
 		 	</div>
 		 	<p> Color Lineart </p>
 		 	<div class="pickButton">
-				<button id="button-line-layer" type="button">On</button>
-				<button id="button-color-layer" type="button">Off</button>
+				<button>On</button>
+				<button>Off</button>
 			</div>
 		</div>
 
 		<div class="horiz-bar">
-		  	<button id="button-eyedrop" type="button"><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/177491-200.png" style="width:50px;height:50px;-webkit-filter: invert(100%);"/></button>
-		  	<button id="button-undo" type="button"><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/189086-200.png" style="width:52px;height:50px;-webkit-filter: invert(100%);"/></button>
-		  	<button id="button-redo" type="button"><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/189086-200.png" style="width:52px;height:50px;-webkit-transform: scaleX(-1);
-		    transform: scaleX(-1);-webkit-filter: invert(100%);"/></button>
-		  	<button id="button-zoom-in" type="button"><img src="http://simpleicon.com/wp-content/uploads/zoom-in.png" style="width:30px;height:30px;-webkit-filter: invert(100%); margin: 10px;"/>	 </button>
-		  	<button id="button-zoom-out" type="button"><img src="http://simpleicon.com/wp-content/uploads/zoom-out.png" style="width:30px;height:30px;-webkit-filter: invert(100%); margin: 10px;"/></button>
-		  	<div class="pickButton" style="float:left;">
-			  	<button id="button-select" type="button"> Select </button>
-			  	<button id="button-deselect" type="button"> De-select </button>
-		  	</div>
-		  	<button id="button-save" style="height:53px;padding-left:10px;padding-right:10px;"> Save </button>
-		</div>
+	  	<button><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/177491-200.png" style="width:50px;height:50px;-webkit-filter: invert(100%);"/></button>
+	  	<button><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/189086-200.png" style="width:52px;height:50px;-webkit-filter: invert(100%);"/></button>
+	  	<button><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/189086-200.png" style="width:52px;height:50px;-webkit-transform: scaleX(-1);
+	    transform: scaleX(-1);-webkit-filter: invert(100%);"/></button>
+	  	<button><img src="http://simpleicon.com/wp-content/uploads/zoom-in.png" style="width:30px;height:30px;-webkit-filter: invert(100%); margin: 10px;"/>	 </button>
+	  	<button><img src="http://simpleicon.com/wp-content/uploads/zoom-out.png" style="width:30px;height:30px;-webkit-filter: invert(100%); margin: 10px;"/></button>
+	  	<div class="pickButton" style="float:left;">
+		  	<button> Select </button>
+		  	<button> De-select </button>
+	  	</div>
+	  	<button style="height:53px;padding-left:10px;padding-right:10px;"> Save </button>
 
-		<div class="canvas-container">
-			<canvas></canvas>
 		</div>
 	</div>
 </body>

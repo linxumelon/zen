@@ -1,7 +1,7 @@
 /* CSS declarations go here */
 @font-face {
   font-family: CONFUSION GIRL;
-  src: url('../public/fonts/CONFUSION GIRL.ttf');
+  src: url('/fonts/CONFUSION GIRL.ttf');
 }
 h1 {
     font-family: CONFUSION GIRL;
@@ -12,7 +12,7 @@ h1 {
     position: absolute;
     left: 0px;
 }
-.theme {
+header {
     font-family: CONFUSION GIRL;
     font-size: 70px;
     position: absolute;
@@ -52,9 +52,8 @@ img {
 .buttons {
   width: 800px;
   margin: 0;
-  position: relative;
+  position: sticky;
   left: 500px;
-  top: 550px; 
 }
 
 .buttons button:hover {
@@ -68,7 +67,7 @@ img {
   margin: 0px;
 }
 
-.buttonBottom {
+.buttonBottom{
   font-size: 18px;
   bottom: 30px;
   margin: 0px;

@@ -1,45 +1,4 @@
-@font-face {
-  font-family: CONFUSION GIRL;
-  src: url('../../public/fonts/CONFUSION GIRL.ttf');
-}
-h1 {
-    font-family: CONFUSION GIRL;
-    background-image: linear-gradient(to right, #d0edf5, pink 100%);
-    padding: 20px 15px 15px 15px;
-    width: 100%;
-    height: 130px;
-    position: absolute;
-    left: 0px;
-}
-.theme {
-    font-family: CONFUSION GIRL;
-    font-size: 70px;
-    position: absolute;
-    left: 100px;
-}
-
-.coloringBody {
-  float: top;
-  width: 800px;
-  margin: 0px auto;
-  position: relative;
-  top: 150px;
-}
-
-.vert-bar {
-  float: left;
-  background-color: dimgrey;
-  width: 200px;
-} 
-
-.vert-bar button:hover {
-  background-color: darkgrey;
-  border: 1px solid black;
-}
-
-.horiz-bar {
-  float: left;
-}
+/*css for color page */
 
 .horiz-bar button {
     background-color: dimgrey; 
@@ -68,7 +27,9 @@ h1 {
     background-color: darkgrey;
     border: 1px solid black;
 }
-
+.horiz-bar {
+  float: left;
+}
 .slidecontainer {
     width: 100%; /* Width of the outside container */
 }
@@ -103,6 +64,13 @@ h1 {
     cursor: pointer; /* Cursor on hover */
 }
 
+
+.vert-bar{
+  float: left;
+  background-color: dimgrey;
+  width: 200px;
+} 
+
 .pickButton button {
   background-color: dimgrey; 
   border-color: black;
@@ -117,8 +85,7 @@ h1 {
   float: left; /* Float the buttons side by side */
 }
 
-.canvas-container {
-  float: left;
-  background-color: white;
-
+.coloringBody {
+  width: 800px;
+  margin: 0px auto;
 }
