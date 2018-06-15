@@ -10,70 +10,64 @@ export default class App extends Component {
             </header>
           </h1>
     
-          <p id="left">
+          <div id="left">
             <ul>
                 <img src="images/sample.jpg"/>
             </ul>
-          </p>
+          </div>
     
-          {/* <div style = "float: right; width: 55%;">
+          <div id="right">
             <ul>
-              <p class="subTheme">
-                <br></br>
-                <img src="images/IMG_0133.jpg"/>
+              <p className="subTheme">
+                <img src="images/IMG_multiArea.jpg"/>
                   Multi-Area Selection
               </p>
 
-              <p class="descTheme">
+              <p className="descTheme">
                 Select multiple areas to color simultaneously.
               </p> 
 
-              <p class="subTheme">
+              <p className="subTheme">
                 <img src="images/IMG_lineSelection.jpg"/>
                   Line Coloring
               </p>
-              <p class="descTheme">
+              <p className="descTheme">
                 The lines can be colored as well.
               </p>
           
-              <p class="subTheme">
+              <p className="subTheme">
                 <img src="images/IMG_upload.jpg"  />
                   Upload
               </p>
-              <p class="descTheme">
+              <p className="descTheme">
                 Upload your own templates; Use templates contributed by other users.
               </p>
           
-              <p class="subTheme">
+              <p className="subTheme">
                 <img src="images/IMG_save.jpg"/>
                   Save
               </p>
-              <p class="descTheme">
+              <p className="descTheme">
                 Save your art, and do whatever you want with it.
               </p>
             </ul>
           </div>
     
-          <br></br>
-          <div>
-            <div class="buttons">
+          <div className ="buttons">
               <a href="chooseTemplate.html">
               <button>
-                <p class="buttonTop">START</p>
-                <p class="buttonBottom">Choose an existing template</p>
+                <p className="buttonTop">START</p>
+                <p className="buttonBottom">Choose an existing template</p>
               </button>
               </a>
-            </div>
-    
-            <div class="buttons">
+
               <a href="upload.html">
               <button>
-                <p class="buttonTop">UPLOAD</p>
-                <p class="buttonBottom">Upload your own template</p>
+                <p className="buttonTop">UPLOAD</p>
+                <p className="buttonBottom">Upload your own template</p>
               </button>
               </a>
-            </div> 
-          </div> */}
+          </div>
       </div>
       )
   }
