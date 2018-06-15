@@ -18,9 +18,13 @@ header {
     position: absolute;
     left: 100px;
 }
-.left {
+#left {
+  width: 60%;
   float: left;
-  width: 50%;
+  margin-top: 150px;
+}
+img[src*="sample"] {
+  width: 80%;
 }
 
 .subTheme {

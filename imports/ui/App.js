@@ -3,18 +3,18 @@ import React, { Component } from 'react';
 export default class App extends Component {
   render() {
       return (
-        <div className="container">
+        <div>
           <h1>
             <header>
               ZEN COLORING
             </header>
           </h1>
     
-          <div className="left">
+          <p id="left">
             <ul>
                 <img src="images/sample.jpg"/>
             </ul>
-          </div>
+          </p>
     
           {/* <div style = "float: right; width: 55%;">
             <ul>
