@@ -18,6 +18,11 @@ header {
     position: absolute;
     left: 100px;
 }
+.left {
+  float: left;
+  width: 50%;
+}
+
 .subTheme {
     font-size:30px;
     color: grey;

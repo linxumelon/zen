@@ -10,15 +10,13 @@ export default class App extends Component {
             </header>
           </h1>
     
-          {/* <div style = "float: left ;width: 40%;">
+          <div className="left">
             <ul>
-              <p>
                 <img src="images/sample.jpg"/>
-              </p>
             </ul>
           </div>
     
-          <div style = "float: right; width: 55%;">
+          {/* <div style = "float: right; width: 55%;">
             <ul>
               <p class="subTheme">
                 <br></br>
