@@ -18,23 +18,31 @@ header {
     position: absolute;
     left: 100px;
 }
-.left {
+#left {
+  width: 45%;
   float: left;
-  width: 50%;
+  margin-top: 150px;
 }
-
-.subTheme {
-    font-size:30px;
+img[src*="sample"] {
+  width: 100%;
+}
+#right {
+  width: 55%;
+  float: right;
+  margin-top: 200px;
+}
+#right ul .subTheme {
+    font-size:35px;
     color: grey;
 }
-img {
-  border:50;
-  alt: "Upload"; 
-  width:60;
-  height:70; 
+
+#right ul .subTheme img {
+  width:70px;
+  height:80px; 
+  border: 50px;
 }
 
-.descTheme {
+#right ul .descTheme {
     font-family: arial;
     font-size: 15px;
     color: #999999;
@@ -51,14 +59,14 @@ img {
   display: block;
   width: 400px;
   position: relative;
-  margin: 30px;
+  margin: 50px;
 }
 
 .buttons {
   width: 800px;
-  margin: 0;
-  position: sticky;
+  position: absolute;
   left: 500px;
+  margin-top: 750px;
 }
 
 .buttons button:hover {
