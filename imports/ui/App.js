@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { withTracker } from 'meteor/react-meteor-data';
+ 
+import { ColorTemplates } from '../api/ColorTemplates.js';
 
 export default class App extends Component {
   render() {
