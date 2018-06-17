@@ -88,6 +88,38 @@ img[src*="sample"] {
 
 /*css for color page */
 
+.coloringBody { /*contains canvas and buttons*/
+  width: 900px;
+  margin: 0px auto;
+  top: 130px;
+  float: top;
+  position: relative;
+}
+
+.canvas-container { /*canvas itself*/
+  float: left;
+  background-color: darkgrey;
+  height: 700px;
+  width: 700px;
+}
+
+.vert-bar{
+  float: left;
+  margin-top: 53px;
+  postion: relative;
+  background-color: dimgrey;
+  width: 200px;
+} 
+
+.vert-bar button:hover {
+  background-color: darkgrey;
+  border: 1px solid black;
+}
+
+.horiz-bar {
+  float: left;
+}
+
 .horiz-bar button {
     background-color: dimgrey; 
     color: white; 
@@ -116,9 +148,7 @@ img[src*="sample"] {
     background-color: darkgrey;
     border: 1px solid black;
 }
-.horiz-bar {
-  float: left;
-}
+
 .slidecontainer {
     width: 100%; /* Width of the outside container */
 }
@@ -153,19 +183,7 @@ img[src*="sample"] {
     cursor: pointer; /* Cursor on hover */
 }
 
-
-.vert-bar{
-  float: left;
-  background-color: dimgrey;
-  width: 200px;
-} 
-
-.vert-bar button:hover {
-  background-color: darkgrey;
-  border: 1px solid black;
-}
-
-.pickButton button {
+.pickButton button { /*for brush/fill, on/off buttons*/
   background-color: dimgrey; 
   border-color: black;
   color: white; 
@@ -183,21 +201,8 @@ img[src*="sample"] {
   float: left;
 }
 
-.selectButton button {
+.selectButton button { /*for select and deselect buttons*/
   padding: 0px 5px;
-}
-
-.coloringBody {
-  width: 800px;
-  margin: 0px auto;
-  top: 150px;
-  float: top;
-  position: relative;
-}
-
-.canvas-container {
-  float: left;
-  background-color: white;
 }
 
 #eyedropperImg {
