@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
  
-import { ColorTemplates } from '../api/ColorTemplates.js';
+import { ColorTemplates } from '../api/colorTemplates.js';
 
 export default class App extends Component {
   constructor() {
@@ -12,7 +12,7 @@ export default class App extends Component {
     return (
       <div>
         <h1>
-          <div class = "theme">
+          <div class="theme">
             ZEN COLORING
           </div>
         </h1>
@@ -20,13 +20,7 @@ export default class App extends Component {
         <div class="coloringBody">
           <div class="vert-bar">
             <canvas id="picker"></canvas>
-              <br></br>
               <input id="color" value="54aedb"></input>
-
-                const KellyColorPicker = {
-                  place: 'picker'，
-                  input: 'color',
-                  size : 150
                 
             </div>
   
@@ -53,18 +47,18 @@ export default class App extends Component {
           </div>
   
           <div class="horiz-bar">
-            <button><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/177491-200.png" style="width:50px;height:50px;-webkit-filter: invert(100%);"/></button>
-            <button><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/189086-200.png" style="width:52px;height:50px;-webkit-filter: invert(100%);"/></button>
-            <button><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/189086-200.png" style="width:52px;height:50px;-webkit-transform: scaleX(-1);
+            <button><img src="images/IMG_eyedropper.png" style="width:50px;height:50px;-webkit-filter: invert(100%);"/></button>
+            <button><img src="images/IMG_undo.png" style="width:52px;height:50px;-webkit-filter: invert(100%);"/></button>
+            <button><img src="images/IMG_undo.png" style="width:52px;height:50px;-webkit-transform: scaleX(-1);
             transform: scaleX(-1);-webkit-filter: invert(100%);"/></button>
-            <button><img src="http://simpleicon.com/wp-content/uploads/zoom-in.png" style="width:30px;height:30px;-webkit-filter: invert(100%); margin: 10px;"/>	 </button>
-            <button><img src="http://simpleicon.com/wp-content/uploads/zoom-out.png" style="width:30px;height:30px;-webkit-filter: invert(100%); margin: 10px;"/></button>
+            <button><img src="images/IMG_zoomIn.png" style="width:30px;height:30px;-webkit-filter: invert(100%); margin: 10px;"/>	 </button>
+            <button><img src="images/IMG_zoomOut.png" style="width:30px;height:30px;-webkit-filter: invert(100%); margin: 10px;"/></button>
             <div class="pickButton" style="float:left;">
               <button> Select </button>
               <button> De-select </button>
             </div>
             <button style="height:53px;padding-left:10px;padding-right:10px;"> Save </button>
-            </div>
+          </div>  
     </div>
     )
    
