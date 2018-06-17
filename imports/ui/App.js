@@ -97,9 +97,7 @@ export default class App extends Component {
           <div className="coloringBody">
             <div className="vert-bar">
               <canvas id="picker"></canvas>
-                <input id="color" value="54aedb"></input>
-                  
-              </div>
+              <input id="color" value="54aedb"></input>
     
               <div className="pickButton">
                 <button>Brush</button>
@@ -108,12 +106,12 @@ export default class App extends Component {
                  
               <div className="sizeSlider">
                 <p> Brush size </p>
-                  <input type="range" min="1" max="100" value="50" className="slider" id="myRange"></input>
+                  <input type="range" min="1" max="100" defaultValue="50" className="slider" id="myRange"></input>
               </div>
 
               <div className="opacitySlider">
                 <p> Brush opacity </p>
-                <input type="range" min="1" max="100" value="50" className="slider" id="myRange"></input>
+                <input type="range" min="1" max="100" defaultValue="50" className="slider" id="myRange"></input>
               </div>
            
               <p> Color Lineart </p>
@@ -129,12 +127,17 @@ export default class App extends Component {
               <button><img id="redoImg" src="images/IMG_undo.png"/></button>
               <button><img id="zoomInImg" src="images/IMG_zoomIn.png"/>  </button>
               <button><img id="zoomOutImg" src="images/IMG_zoomOut.png"/></button>
-              <div className="pickButton">
+              <div className="selectButton">
                 <button> Select </button>
                 <button> De-select </button>
               </div>
               <button id="saveButton"> Save </button>
             </div>  
+
+            <div className="canvas-container">
+              <canvas></canvas>
+            </div>  
+          </div>  
         </div>
       ;
     }

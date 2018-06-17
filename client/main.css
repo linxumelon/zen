@@ -93,7 +93,8 @@ img[src*="sample"] {
     color: white; 
     border-radius: 5px;
     border-color: black;
-    font-size: 30px;
+    font-size: 25px;
+    height: 53px;
     padding: 0px 0px; /* Some padding */
     cursor: pointer; /* Pointer/hand icon */
     float: left; /* Float the buttons side by side */
@@ -159,6 +160,11 @@ img[src*="sample"] {
   width: 200px;
 } 
 
+.vert-bar button:hover {
+  background-color: darkgrey;
+  border: 1px solid black;
+}
+
 .pickButton button {
   background-color: dimgrey; 
   border-color: black;
@@ -173,9 +179,25 @@ img[src*="sample"] {
   float: left; /* Float the buttons side by side */
 }
 
+.selectButton {
+  float: left;
+}
+
+.selectButton button {
+  padding: 0px 5px;
+}
+
 .coloringBody {
   width: 800px;
   margin: 0px auto;
+  top: 150px;
+  float: top;
+  position: relative;
+}
+
+.canvas-container {
+  float: left;
+  background-color: white;
 }
 
 #eyedropperImg {
@@ -212,8 +234,9 @@ img[src*="sample"] {
   margin: 10px;
 }
 
-.saveButton {
+#saveButton {
   height: 53px;
   padding-left: 10px;
   padding-right: 10px;
+  float: left;
 }
