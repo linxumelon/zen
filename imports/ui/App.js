@@ -16,8 +16,11 @@ export default class App extends Component {
   }
 
   render() {
-    if (this.state.view === "home") {
-      return (
+    const view = this.state.view;
+    let page;
+
+    if (view === "home") {
+      page = 
         <div>
           <h1>
             <header>
@@ -69,24 +72,21 @@ export default class App extends Component {
           </div>
     
           <div className ="buttons">
-              <a href="chooseTemplate.html">
               <button onClick={this.handleStartClick}>
                 <p className="buttonTop">START</p>
                 <p className="buttonBottom">Choose an existing template</p>
               </button>
-              </a>
 
-              <a href="upload.html">
               <button>
                 <p className="buttonTop">UPLOAD</p>
                 <p className="buttonBottom">Upload your own template</p>
               </button>
-              </a>
           </div>
-      </div>
-      )
-    } else if (this.state.view === "colorPage") {
-      return (
+        </div>
+      ;
+      
+    } else if (view === "colorPage") {
+      page = 
         <div>
           <h1>
             <header>
@@ -136,10 +136,14 @@ export default class App extends Component {
               <button id="saveButton"> Save </button>
             </div>  
         </div>
-      )  
-    } else {
-      return null;
-    } 
+      ;
+    }
+
+    return (
+      <div>
+        {page}
+      </div>  
+    );  
   }
 }
 
