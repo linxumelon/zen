@@ -1,72 +1,22 @@
 import React, { Component } from 'react';
+
 import { withTracker } from 'meteor/react-meteor-data';
  
 import { ColorTemplates } from '../api/colorTemplates.js';
 
 export default class App extends Component {
-  constructor() {
-    super();
-    this.handleClickOnStartButton = this.handleClickOnStartButton.bind(this);
+  constructor(props) {
+    super(props);
+    this.handleStartClick = this.handleStartClick.bind(this);
+    this.state = {view: "home"};
   }
 
-  handleClickOnStartButton() {
-    return (
-      <div>
-        <h1>
-          <div class="theme">
-            ZEN COLORING
-          </div>
-        </h1>
-        
-        <div class="coloringBody">
-          <div class="vert-bar">
-            <canvas id="picker"></canvas>
-              <input id="color" value="54aedb"></input>
-                
-            </div>
-  
-            <div class="pickButton">
-              <button>Brush</button>
-              <button>Fill</button>
-            </div>
-               
-            <div class="sizeSlider">
-              <p> Brush size </p>
-                <input type="range" min="1" max="100" value="50" class="slider" id="myRange"></input>
-            </div>
-
-            <div class="opacitySlider">
-              <p> Brush opacity </p>
-              <input type="range" min="1" max="100" value="50" class="slider" id="myRange"></input>
-            </div>
-         
-            <p> Color Lineart </p>
-            <div class="pickButton">
-              <button>On</button>
-              <button>Off</button>
-            </div>
-          </div>
-  
-          <div class="horiz-bar">
-            <button><img src="images/IMG_eyedropper.png" style="width:50px;height:50px;-webkit-filter: invert(100%);"/></button>
-            <button><img src="images/IMG_undo.png" style="width:52px;height:50px;-webkit-filter: invert(100%);"/></button>
-            <button><img src="images/IMG_undo.png" style="width:52px;height:50px;-webkit-transform: scaleX(-1);
-            transform: scaleX(-1);-webkit-filter: invert(100%);"/></button>
-            <button><img src="images/IMG_zoomIn.png" style="width:30px;height:30px;-webkit-filter: invert(100%); margin: 10px;"/>	 </button>
-            <button><img src="images/IMG_zoomOut.png" style="width:30px;height:30px;-webkit-filter: invert(100%); margin: 10px;"/></button>
-            <div class="pickButton" style="float:left;">
-              <button> Select </button>
-              <button> De-select </button>
-            </div>
-            <button style="height:53px;padding-left:10px;padding-right:10px;"> Save </button>
-          </div>  
-    </div>
-    )
-   
+  handleStartClick() {
+    this.setState({view: "colorPage"});
   }
 
-  
   render() {
+    if (this.state.view === "home") {
       return (
         <div>
           <h1>
@@ -120,7 +70,7 @@ export default class App extends Component {
     
           <div className ="buttons">
               <a href="chooseTemplate.html">
-              <button onClick={this.handleClickOnStartButton}>
+              <button onClick={this.handleStartClick}>
                 <p className="buttonTop">START</p>
                 <p className="buttonBottom">Choose an existing template</p>
               </button>
@@ -135,6 +85,61 @@ export default class App extends Component {
           </div>
       </div>
       )
+    } else if (this.state.view === "colorPage") {
+      return (
+        <div>
+          <h1>
+            <header>
+              ZEN COLORING
+            </header>
+          </h1>
+          
+          <div className="coloringBody">
+            <div className="vert-bar">
+              <canvas id="picker"></canvas>
+                <input id="color" value="54aedb"></input>
+                  
+              </div>
+    
+              <div className="pickButton">
+                <button>Brush</button>
+                <button>Fill</button>
+              </div>
+                 
+              <div className="sizeSlider">
+                <p> Brush size </p>
+                  <input type="range" min="1" max="100" value="50" className="slider" id="myRange"></input>
+              </div>
+
+              <div className="opacitySlider">
+                <p> Brush opacity </p>
+                <input type="range" min="1" max="100" value="50" className="slider" id="myRange"></input>
+              </div>
+           
+              <p> Color Lineart </p>
+              <div className="pickButton">
+                <button>On</button>
+                <button>Off</button>
+              </div>
+            </div>
+    
+            <div className="horiz-bar">
+              <button><img id="eyedropperImg" src="images/IMG_eyedropper.png"/></button>
+              <button><img id="undoImg" src="images/IMG_undo.png"/></button>
+              <button><img id="redoImg" src="images/IMG_undo.png"/></button>
+              <button><img id="zoomInImg" src="images/IMG_zoomIn.png"/>  </button>
+              <button><img id="zoomOutImg" src="images/IMG_zoomOut.png"/></button>
+              <div className="pickButton">
+                <button> Select </button>
+                <button> De-select </button>
+              </div>
+              <button id="saveButton"> Save </button>
+            </div>  
+        </div>
+      )  
+    } else {
+      return null;
+    } 
   }
 }
 

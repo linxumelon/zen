@@ -89,3 +89,43 @@
   width: 800px;
   margin: 0px auto;
 }
+
+#eyedropperImg {
+  width: 50px;
+  height: 50px;
+  -webkit-filter: invert(100%);
+}
+
+#undoImg {
+  width: 52px;
+  height: 50px;
+  -webkit-filter: invert(100%);
+}
+
+#redoImg {
+  width:52px;
+  height:50px;
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  -webkit-filter: invert(100%);
+}
+
+#zoomInImg {
+  width: 30px;
+  height: 30px;
+  -webkit-filter: invert(100%); 
+  margin: 10px;
+}
+
+#zoomOutImg {
+  width: 30px;
+  height: 30px;
+  -webkit-filter: invert(100%); 
+  margin: 10px;
+}
+
+.saveButton {
+  height: 53px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
