@@ -6,6 +6,7 @@ import { ColorTemplates } from '../api/colorTemplates.js';
 export default class App extends Component {
   constructor() {
     super();
+    this.handleClickOnStartButton = this.handleClickOnStartButton.bind(this);
   }
 
   handleClickOnStartButton() {
@@ -63,6 +64,8 @@ export default class App extends Component {
     )
    
   }
+
+  
   render() {
       return (
         <div>
@@ -117,7 +120,7 @@ export default class App extends Component {
     
           <div className ="buttons">
               <a href="chooseTemplate.html">
-              <button onClick={this.handleClickOnStartButton.bind(this)}>
+              <button onClick={this.handleClickOnStartButton}>
                 <p className="buttonTop">START</p>
                 <p className="buttonBottom">Choose an existing template</p>
               </button>
