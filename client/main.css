@@ -86,7 +86,16 @@ img[src*="sample"] {
   margin: 0px;
 }
 
-/*css for color page */
+/*css for color page 
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
 
 .coloringBody { /*contains canvas and buttons*/
   width: 900px;
@@ -245,3 +254,23 @@ img[src*="sample"] {
   padding-right: 10px;
   float: left;
 }
+
+
+/* upload page css
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+
+ .uploadContainer {
+   top: 300px;
+   width: 300px;
+   margin: 0px auto;
+   float: top;
+   position: relative;
+ }

@@ -5,7 +5,7 @@ import { render } from 'react-dom';
 import App from '../imports/ui/App.js';
 
 Images = new FS.Collection("images", {
-  stores: [new FS.Store.FileSystem("images", {path: "~/upload"})]
+  stores: [new FS.Store.GridFS("images", {path: "~/upload"})]
 });
 
 Meteor.startup(() => {

@@ -24,3 +24,5 @@ underscore
 react-meteor-data
 cfs:standard-packages
 cfs:filesystem
+cfs:gridfs
+cfs:graphicsmagick

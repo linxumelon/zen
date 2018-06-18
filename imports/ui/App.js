@@ -8,11 +8,16 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.handleStartClick = this.handleStartClick.bind(this);
+    this.handleUploadClick = this.handleUploadClick.bind(this);
     this.state = {view: "home"};
   }
 
   handleStartClick() {
     this.setState({view: "colorPage"});
+  }
+
+  handleUploadClick() {
+    this.setState({view: "uploadPage"});
   }
 
   render() {
@@ -77,7 +82,7 @@ export default class App extends Component {
                 <p className="buttonBottom">Choose an existing template</p>
               </button>
 
-              <button>
+              <button onClick={this.handleUploadClick}>
                 <p className="buttonTop">UPLOAD</p>
                 <p className="buttonBottom">Upload your own template</p>
               </button>
@@ -140,6 +145,20 @@ export default class App extends Component {
           </div>  
         </div>
       ;
+    } else if (view === "uploadPage") {
+      page = 
+        <div>
+          <h1>
+            <header>
+              ZEN COLORING
+            </header>
+          </h1>
+          <div className="uploadContainer">
+            <p> Upload a .png file with no background </p>
+            <input type="file" name="images" className="uploadFileInput"/>
+          </div>
+        </div>
+      ;    
     }
 
     return (
