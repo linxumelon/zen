@@ -22,3 +22,5 @@ insecure@1.0.7                # Allow all DB writes from clients (for prototypin
 session@1.1.7
 underscore
 react-meteor-data
+cfs:standard-packages
+cfs:filesystem
