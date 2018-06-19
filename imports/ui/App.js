@@ -2,7 +2,13 @@ import React, { Component } from 'react';
 
 import { withTracker } from 'meteor/react-meteor-data';
  
-import { ColorTemplates } from '../api/colorTemplates.js';
+import { Template } from 'meteor/templating';
+
+import ReactDOM from 'react-dom';
+
+import Images from '../../server/main.js';
+
+import UploadForm from '../upload/uploadPage.js';
 
 export default class App extends Component {
   constructor(props) {
@@ -21,18 +27,12 @@ export default class App extends Component {
   }
 
   render() {
-    const view = this.state.view;
+    const view = this.state.view; 
     let page;
 
     if (view === "home") {
       page = 
         <div>
-          <h1>
-            <header>
-              ZEN COLORING
-            </header>
-          </h1>
-    
           <div id="left">
             <ul>
                 <img src="images/sample.jpg"/>
@@ -93,12 +93,6 @@ export default class App extends Component {
     } else if (view === "colorPage") {
       page = 
         <div>
-          <h1>
-            <header>
-              ZEN COLORING
-            </header>
-          </h1>
-          
           <div className="coloringBody">
             <div className="vert-bar">
               <canvas id="picker"></canvas>
@@ -147,26 +141,19 @@ export default class App extends Component {
       ;
     } else if (view === "uploadPage") {
       page = 
-        <div>
-          <h1>
-            <header>
-              ZEN COLORING
-            </header>
-          </h1>
-          <div className="uploadContainer">
-            <p> Upload a .png file with no background </p>
-            <input type="file" name="images" className="uploadFileInput"/>
-          </div>
-        </div>
+        <UploadForm/>
       ;    
     }
 
     return (
       <div>
+        <h1>
+          <header>
+            ZEN COLORING
+          </header>
+        </h1>
         {page}
       </div>  
     );  
   }
 }
-
- 
