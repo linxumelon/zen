@@ -6,6 +6,15 @@ import { Template } from 'meteor/templating';
 
 import ReactDOM from 'react-dom';
 
+import './chooseTemplate.html';
+
+import Images from '../../client/main.js';
+
+Template.body.helpers({
+  images() {
+    return Images.find({}, { sort: {createdAt: -1} });
+  }
+});
 
 export default class App extends Component {
   constructor(props) {
@@ -16,7 +25,8 @@ export default class App extends Component {
   }
 
   handleStartClick() {
-    this.setState({view: "colorPage"});
+    this.setState({view: "templates"});
+    // this.setState({view: "colorPage"});
   }
 
   handleUploadClick() {
@@ -87,6 +97,9 @@ export default class App extends Component {
         </div>
       ;
       
+    } else if (view === "templates") {
+      page = <imageSubmitted />;
+    
     } else if (view === "colorPage") {
       page = 
         <div>
@@ -204,4 +217,18 @@ class UploadForm extends Component {
       </div>
     );  
   }
+
+
 }
+
+// class chooseTemplate extends Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       preview: true,
+//     };
+//   }
+
+
+
+// }

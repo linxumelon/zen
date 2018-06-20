@@ -7,13 +7,16 @@ var createThumb = function(fileObj, readStream, writeStream) {
 	gm(readStream,fileObj.name()).resize('300','300').stream().pipe(writeStream);
 };
 
+var imageStore = new FS.Store.GridFS("images", {path: "/uploads/images"});
+var thumbStore = new FS.Store.GridFS("thumbs", {path:" /uploads/thumbs", transformWrite: createThumb });
 Images = new FS.Collection("images", {
   stores: [
-  	new FS.Store.GridFS("images", {path: "~/uploads"}),
-  	new FS.Store.GridFS("thumbs", { transformWrite: createThumb })
+		imageStore,
+		thumbStore
   ],
   filter: {
   	allow: {
+			maxSize: 100000,
   		contentTypes: ['image/*'],
   		extensions: ['png']
   	}
@@ -21,7 +24,13 @@ Images = new FS.Collection("images", {
 });
 
 Images.allow({
-	'insert': function () {
+	'insert': function (userId, file) {
+		return true;
+  },
+  'remove': function(unserId, file) {
+    return true;
+	},
+	'download': function(userId, file) {
 		return true;
 	}
 });
