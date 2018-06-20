@@ -1,7 +1,5 @@
 import { Meteor } from 'meteor/meteor';
 
-import '../imports/api/colorTemplates.js';
-
 var createThumb = function(fileObj, readStream, writeStream) {
 	//transforms image into 300x300px thumbnail
 	gm(readStream,fileObj.name()).resize('300','300').stream().pipe(writeStream);

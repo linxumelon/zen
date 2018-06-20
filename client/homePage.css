@@ -1,0 +1,72 @@
+@font-face {
+  font-family: CONFUSION GIRL;
+  src: url('/fonts/CONFUSION GIRL.ttf');
+}
+
+#left {
+  width: 45%;
+  float: left;
+  margin-top: 150px;
+}
+img[src*="sample"] {
+  width: 100%;
+}
+#right {
+  width: 55%;
+  float: right;
+  margin-top: 200px;
+}
+#right ul .subTheme {
+    font-size:35px;
+    color: grey;
+}
+
+#right ul .subTheme img {
+  width:70px;
+  height:80px; 
+  border: 50px;
+}
+
+#right ul .descTheme {
+    font-family: arial;
+    font-size: 15px;
+    color: #999999;
+    position: relative;
+    left: 70px;
+    bottom: 30px;
+}
+
+.buttons button {
+  background-color: powderblue;
+  border-radius: 6px;
+  padding: 0px 0px;
+  cursor: pointer;
+  display: block;
+  width: 400px;
+  position: relative;
+  margin: 50px;
+}
+
+.buttons {
+  width: 800px;
+  position: absolute;
+  left: 500px;
+  margin-top: 750px;
+}
+
+.buttons button:hover {
+  background-color: #E7D1F7;
+  text-decoration: underline;
+}
+
+.buttonTop {
+  font-size: 30px;
+  font-family: helvetica;
+  margin: 0px;
+}
+
+.buttonBottom{
+  font-size: 18px;
+  bottom: 30px;
+  margin: 0px;
+}

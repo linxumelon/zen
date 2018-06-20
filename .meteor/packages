@@ -26,3 +26,7 @@ cfs:standard-packages
 cfs:filesystem
 cfs:gridfs
 cfs:graphicsmagick
+kadira:flow-router
+zimme:active-route
+kadira:blaze-layout
+jquery

@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-
+import { FlowRouter } from 'meteor/kadira:flow-router';
 
 Template.uploadForm.helpers({
 	"submit .new-upload": function(event) {
@@ -10,10 +10,12 @@ Template.uploadForm.helpers({
 				if (err) {
 					console.log("error:" + err);
 				} else {
-
+					FlowRouter.go(colorPage);
 				}
 			});
-		} 
+		} else {
+			FlowRouter.go(colorPage);
+		}
 	}
 })
 
