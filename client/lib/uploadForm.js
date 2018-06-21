@@ -10,11 +10,11 @@ Template.uploadForm.helpers({
 				if (err) {
 					console.log("error:" + err);
 				} else {
-					FlowRouter.go(colorPage);
+					FlowRouter.go('/color');
 				}
 			});
 		} else {
-			FlowRouter.go(colorPage);
+			FlowRouter.go('/color');
 		}
 	}
 })
