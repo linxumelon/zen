@@ -1,3 +1,43 @@
+import {$,jQuery} from 'meteor/jquery';
+
+/*
+Template.colorPage.onRendered({
+    let canvas = document.querySelector('canvas');
+    let container = canvas.parentNode;
+    let width     = 700;  // px
+    let height    = 700;  // px
+
+    // Create the instance of ArtCanvas
+    let artCanvas = new ArtCanvas(container, canvas, width, height);
+
+    //creates new layer, line layer is 1, color layer is 0
+    artCanvas.addLayer(width, height);
+
+    //imports template png to line layer
+    artCanvas.selectLayer(1);
+    let src = "/images/line.png";
+    artCanvas.drawImage(src);
+
+    //set to drawing by brush on color layer
+    artCanvas.selectLayer(0);
+    artCanvas.setMode(ArtCanvas.Mode.HAND);
+
+    let callbacks = {
+        drawstart   : function() {},
+        drawmove    : function() {},
+        drawend     : function() {}
+    };
+
+    artCanvas.setCallbacks(callbacks);
+});
+
+Template.colorPage.events({
+    'click .button-brush': function() {
+        artCanvas.setMode(ArtCanvas.Mode.HAND);
+    }
+
+}); */
+
 $(function() {
     var canvas    = document.querySelector('canvas');
     var container = canvas.parentNode;

@@ -1,8 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import {$,jQuery} from 'meteor/jquery';
 
-Template.uploadForm.helpers({
-	"submitNewUpload": function(event) {
+Template.uploadForm.events({
+	"submit #new-upload": function(event) {
+		event.preventDefault();
 		const isPublic = document.getElementById("shareSettings").checked;
 		const file = $('#uploadedImage').get(0).files[0];
 		if (isPublic) {
@@ -10,14 +12,15 @@ Template.uploadForm.helpers({
 				if (err) {
 					console.log("error:" + err);
 				} else {
-					FlowRouter.go('/color');
+					FlowRouter.go(colorPage);
 				}
 			});
 		} else {
-			FlowRouter.go('/color');
+			FlowRouter.go(colorPage);
 		}
 	}
-})
+});
+
 
 /*
 class UploadForm extends Component {
