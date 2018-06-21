@@ -39,7 +39,7 @@ Template.colorPage.events({
 }); */
 
 $(function() {
-    var canvas    = document.querySelector('canvas');
+    var canvas    = document.querySelector('#theCanvas');
     var container = canvas.parentNode;
     var width     = 700;  // px
     var height    = 700;  // px
@@ -76,6 +76,14 @@ $(function() {
         var color     = new ArtCanvas.Color(tinycolor._r, tinycolor._g, tinycolor._b, tinycolor._a);
 
         artCanvas.fill(event.originalEvent, artCanvas.getFillStyle());
+    });
+
+    $('button-line-layer').click(function() {
+        artCanvas.selectLayer(1);
+    });
+
+    $('button-color-layer').click(function() {
+        artCanvas.selectLayer(0);
     });
 
     $('#button-eyedrop').click(function() {
