@@ -1,0 +1,12 @@
+<template name="choosePage">
+	<div class="body">
+		<p>display templates here</p>
+	</div>
+
+	{{#each images}}
+	<div class = "uploadedImage">
+		<img src="{{this.url}}" class = "tableImage"
+	alt="thumbnail">
+	</div>
+	{{/each}}
+</template>
