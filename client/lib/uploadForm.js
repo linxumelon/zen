@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
 Template.uploadForm.helpers({
-	"submit .new-upload": function(event) {
+	"submitNewUpload": function(event) {
 		const isPublic = document.getElementById("shareSettings").checked;
 		const file = $('#uploadedImage').get(0).files[0];
 		if (isPublic) {

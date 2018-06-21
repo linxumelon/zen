@@ -11,7 +11,7 @@ FlowRouter.route( '/', {
 	name: 'home'
 });
 
-FlowRouter.route( '/choose-template', {
+FlowRouter.route( '/choose-templates', {
 	action: function() {
 		BlazeLayout.render( 'applicationLayout', {
 			header: 'headerTemplate',
