@@ -1,24 +1,71 @@
 import { Meteor } from 'meteor/meteor';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import {$,jQuery} from 'meteor/jquery';
+import imageStore from '../../commons/collection.js';
 
+Meteor.subscribe('imageStore')
+;
 Template.uploadForm.events({
-	"submit #new-upload": function(event) {
+	'submit form': function() {
 		event.preventDefault();
 		const isPublic = document.getElementById("shareSettings").checked;
-		const file = $('#uploadedImage').get(0).files[0];
-		if (isPublic) {
-			Images.insert(fsFile, function(err, fileObj) {
+		var file = event.target.uploadedImage;
+		console.log(isPublic);			
+		console.log("change has happened to file input");
+		FS.Utility.eachFile(event,function(file) {
+			console.log("image being submitted");
+			var newFile = new FS.file(file);
+			Images.insert(newFile, function (err, fileObj) {
 				if (err) {
-					console.log("error:" + err);
+					console.log("error" + err.reason);
 				} else {
-					FlowRouter.go(colorPage);
+					console.log("image submitted");
+					var userId = Meteor.userId();
+					var imagesURL = {
+						"startColoring.image": "cfs/files/images" + filOebj_.id
+					};
+					Meteor.users.update(userId ,{$seL: imagesURL});
 				}
 			});
-		} else {
-			FlowRouter.go(colorPage);
-		}
-	}
+		});
+	},
+	// "submit #startColoring": function(event) {
+	// 	event.preventDefault();
+	// 	console.log("Image submitted");
+	// 	const isPublic = document.getElementById("shareSettings").checked;
+	// 	const file = $('#uploadedImage').get(0).files[0];
+	// 	if (isPublic) {
+	// 		Images.insert(fsFile, function(err, fileObj) {
+	// 			if (err) {
+	// 				console.log("error:" + err.reason);
+	// 			} else {
+	// 				FlowRouter.go(colorPage);
+	// 			}
+	// 		});
+	// 	} else {
+	// 		FlowRouter.go(colorPage);
+	// 	}
+	// },
+	// 'change #fileInput': function(event, template) {
+	// 		event.preventDefault();
+	// 		console.log("change has happened to file input");
+	// 		FS.Utility.eachFile(event,function(file) {
+	// 			console.log("image being submitted");
+	// 			var newFile = new FS.file(file);
+	// 			Images.insert(newFile, function (err, fileObj) {
+	// 				if (err) {
+	// 					console.log("error" + err.reason);
+	// 				} else {
+	// 					console.log("image submitted");
+	// 					var userId = Meteor.userId();
+	// 					var imagesURL = {
+	// 						"startColoring.image": "cfs/files/images" + filOebj_.id
+	// 					};
+	// 					Meteor.users.update(userId ,{$seL: imagesURL});
+	// 				}
+	// 			});
+	// 		});
+	// 	}
 });
 
 

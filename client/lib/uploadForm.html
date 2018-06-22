@@ -1,13 +1,13 @@
 <template name="uploadForm">
-	<div>
+	
     <div class="uploadContainer">
       <p> Upload a .png file with no background </p>
-      <form class="new-upload">
-        <input type="file" name="uploadedImage" id="uploadedImage" class="uploadFileInput"/>
-        <p><input id="shareSettings" type="checkbox" name="shareSettings"/> Make this template public </p>      
-        <input type="submit" name="startColoring" value="Start Coloring"/>
+      <form method="POST">
+        <input type="file" name="uploadedImage" id="fileInput">
+        <p><input  type="checkbox" name="shareSettings" id="shareSettings"/> Make this template public</p>
+        <input type="submit" value="submit request">    
+        <!-- <input type="submit" id="startColoring" value="Start Coloring"/> -->
       </form>
-      {{submitNewUpload}}
     </div>
-  </div>
+  
 </template>
