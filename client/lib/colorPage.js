@@ -19,6 +19,7 @@ $(function() {
 
     //set to drawing by brush on color layer
     artCanvas.selectLayer(0);
+    artCanvas.drawImage(src);
     artCanvas.setMode(ArtCanvas.Mode.HAND);
 
     var callbacks = {
@@ -48,12 +49,10 @@ $(function() {
     });
 
     $('#button-fill').click(function() {
-        var prevMode = artCanvas.getMode();
         artCanvas.setMode(ArtCanvas.Mode.TOOL);
         $('canvas').off('.art-canvas').on('click.art-canvas', function(event) {
             artCanvas.fill(event.originalEvent, artCanvas.getFillStyle());
         });    
-        artCanvas.setMode(prevMode);
     });
 
     $('button-line-layer').click(function() {
