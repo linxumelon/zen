@@ -8,7 +8,7 @@ import { Template } from 'meteor/templating';
 //   });
   
 Template.choosePage.helpers({
-    action:function() {
-    Meteor.publish("images", function(){ return Images.find();});
+    images: function() {
+    return Images.find();
     }
 });

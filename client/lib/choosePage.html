@@ -2,12 +2,13 @@
 	<div class="body">
 		<p>display templates here</p>
 	</div>
-
-	{{#each images}}
 	<div class = "uploadedImage">
-		<img src="{{this.url}}" class = "tableImage"
-	alt="thumbnail">
+		{{#each images}}
+		<div>
+			<a href="{{this.url}}" target="_blank">
+				<img src="{{this.url store='thumbs' alt="" class="thumbnail"}}"/>
+			</a>
+		</div>
+		{{/each}}
 	</div>
-	{{/each}}
-
 </template>
