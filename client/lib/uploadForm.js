@@ -3,32 +3,55 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import {$,jQuery} from 'meteor/jquery';
 import imageStore from '../../commons/collection.js';
 
-Meteor.subscribe('imageStore')
-;
+Meteor.subscribe('images');
 Template.uploadForm.events({
-	'submit form': function() {
+	'submit form': function(event) {
 		event.preventDefault();
 		const isPublic = document.getElementById("shareSettings").checked;
-		var file = event.target.uploadedImage;
+		var newFile = event.target.fileInput;
 		console.log(isPublic);			
 		console.log("change has happened to file input");
-		FS.Utility.eachFile(event,function(file) {
+		console.log(newFile);
+		// FS.Utility.eachFile(event,function(file) {
 			console.log("image being submitted");
-			var newFile = new FS.file(file);
-			Images.insert(newFile, function (err, fileObj) {
+			var tempFile = document.getElementById('fileInput');
+			var file = tempFile.files[0];
+			console.log(typeof(file));
+			fsFile = new FS.File(file);
+			fsFile.metadata = {
+			    ownerId:Meteor.userId()
+			}
+			Images.insert(fsFile, function (err, result) {
 				if (err) {
 					console.log("error" + err.reason);
 				} else {
 					console.log("image submitted");
-					var userId = Meteor.userId();
-					var imagesURL = {
-						"startColoring.image": "cfs/files/images" + filOebj_.id
-					};
-					Meteor.users.update(userId ,{$seL: imagesURL});
+					// var userId = Meteor.userId();
+					// var imagesURL = {
+					// 	"startColoring.image": "cfs/files/images" + filOebj_.id
+					// };
+					// Meteor.users.update(userId ,{$seL: imagesURL});
+					Images.on('uploaded', function (fileObj) {
+						console.log("image uploaded");
+					});
 				}
+				console.log(fsFile.uploadProgress());
+				console.log(Images.find());
+				console.log(fsFile.isUploaded());
+				console.log(fsFile.getFileRecord());
 			});
-		});
-	},
+			
+			Images.on('stored', function (fileObj, storeName) {
+				console.log("Image stored");
+			  });
+			
+			Images.on('error', function (error, fileObj) {
+				console.log("error"+ error.reason);
+			  });
+			
+		// });
+	}
+	
 	// "submit #startColoring": function(event) {
 	// 	event.preventDefault();
 	// 	console.log("Image submitted");
@@ -67,6 +90,9 @@ Template.uploadForm.events({
 	// 		});
 	// 	}
 });
+Template.uploadForm.images = function() {
+	return Images.find();
+}	
 
 
 /*

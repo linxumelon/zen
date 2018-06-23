@@ -7,7 +7,6 @@ Images = new FS.Collection("images", {
   ],
   filter: {
   	allow: {
-			maxSize: 100000,
   		contentTypes: ['image/*'],
   		extensions: ['png']
   	}

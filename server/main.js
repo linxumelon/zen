@@ -1,9 +1,11 @@
 import { Meteor } from 'meteor/meteor';
 
-var createThumb = function(fileObj, readStream, writeStream) {
-	//transforms image into 300x300px thumbnail
-	gm(readStream,fileObj.name()).resize('300','300').stream().pipe(writeStream);
-};
+
+
+// var createThumb = function(fileObj, readStream, writeStream) {
+// 	transforms image into 300x300px thumbnail
+// 	gm(readStream,fileObj.name()).resize('300','300').stream().pipe(writeStream);
+// };
 
 // var imageStore = new FS.Store.GridFS("images", {path: "/uploads/images"});
 // var thumbStore = new FS.Store.GridFS("thumbs", {path:" /uploads/thumbs", transformWrite: createThumb });
@@ -22,17 +24,21 @@ var createThumb = function(fileObj, readStream, writeStream) {
 // });
 
 Images.allow({
-	'insert': function (userId, file) {
+	'insert': function () {
 		return true;
   },
-  'remove': function(unserId, file) {
+  'remove': function() {
     return true;
 	},
-	'download': function(userId, file) {
+	'download': function() {
 		return true;
-	}
+	}, 
+	'update' : function () {
+		return true;
+},
 });
-
+Meteor.publish("images", function publishImage(){ 
+	return Images.find(); });
 Meteor.startup(() => {
   // code to run on server at startup
 });

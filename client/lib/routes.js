@@ -22,6 +22,9 @@ FlowRouter.route( '/choose-templates', {
 });
 
 FlowRouter.route( '/upload', {
+	waitOn: function() {
+		return Meteor.subscribe('images');
+	},
 	action: function() {
 		BlazeLayout.render( 'applicationLayout', {
 			header: 'headerTemplate',
