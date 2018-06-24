@@ -7,6 +7,7 @@ h1 {
     background-image: linear-gradient(to right, #d0edf5, pink 100%);
     padding: 20px 15px 15px 15px;
     width: 100%;
+    margin: 0;
     height: 130px;
     position: absolute;
     left: 0px;

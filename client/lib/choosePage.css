@@ -4,9 +4,14 @@
 }
 
 .body {
-   top: 300px;
-   width: 300px;
+   top: 200px;
+   width: 1300px;
    margin: 0px auto;
    float: top;
    position: relative;
+
+}
+
+.pure-u-1-4 {
+  margin-bottom: 25px
 }
