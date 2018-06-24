@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import {$,jQuery} from 'meteor/jquery';
 import imageStore from '../../commons/collection.js';
+var debug = true;
 
 Meteor.subscribe('images');
 Template.uploadForm.events({
@@ -19,13 +20,13 @@ Template.uploadForm.events({
 			console.log(typeof(file));
 			fsFile = new FS.File(file);
 			fsFile.metadata = {
-			    ownerId:Meteor.userId()
+			    ownerId:"Sample"
 			}
 			Images.insert(fsFile, function (err, result) {
 				if (err) {
 					console.log("error" + err.reason);
 				} else {
-					console.log("image submitted");
+					console.log(result);
 					// var userId = Meteor.userId();
 					// var imagesURL = {
 					// 	"startColoring.image": "cfs/files/images" + filOebj_.id
@@ -35,11 +36,14 @@ Template.uploadForm.events({
 						console.log("image uploaded");
 					});
 				}
-				console.log(fsFile.uploadProgress());
-				console.log(Images.find());
-				console.log(fsFile.isUploaded());
-				console.log(fsFile.getFileRecord());
+
 			});
+			if(debug) {
+			console.log(fsFile.uploadProgress());
+			console.log(Images.find());
+			console.log(fsFile.isUploaded());
+			console.log(fsFile.getFileRecord());
+			
 			
 			Images.on('stored', function (fileObj, storeName) {
 				console.log("Image stored");
@@ -48,6 +52,7 @@ Template.uploadForm.events({
 			Images.on('error', function (error, fileObj) {
 				console.log("error"+ error.reason);
 			  });
+			}
 			
 		// });
 	}
@@ -90,9 +95,11 @@ Template.uploadForm.events({
 	// 		});
 	// 	}
 });
-Template.uploadForm.images = function() {
-	return Images.find();
-}	
+Template.uploadForm.helpers({
+	images: function() {
+		return Images.find();
+	}
+})
 
 
 /*

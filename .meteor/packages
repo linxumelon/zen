@@ -32,3 +32,4 @@ kadira:blaze-layout
 jquery
 http
 accounts-base
+cfs:ejson-file

@@ -28,7 +28,8 @@ FlowRouter.route( '/upload', {
 	action: function() {
 		BlazeLayout.render( 'applicationLayout', {
 			header: 'headerTemplate',
-			main: 'uploadForm'
+			main: 'uploadForm',
+			// area: 'display'
 		});
 	},
 	name: 'upload'
