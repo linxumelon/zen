@@ -12,3 +12,12 @@ Template.choosePage.helpers({
     return Images.find();
     }
 });
+
+Template.choosePage.events({
+	'click .pure-u-1-4': function() {
+		var imageURL = this.url("cropped");
+		var params = {};
+		var queryParams = {image: imageURL}
+		FlowRouter.go("/color", params, queryParams);
+	}
+})

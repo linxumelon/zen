@@ -1,4 +1,5 @@
 import {$,jQuery} from 'meteor/jquery';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 
 $(function() {
     var canvas    = document.querySelector('#theCanvas');
@@ -14,7 +15,7 @@ $(function() {
 
     //imports template png to line layer
     artCanvas.selectLayer(1);
-    var src = "/images/line.png";
+    var src = FlowRouter.getQueryParam("image");
     artCanvas.drawImage(src);
 
     //set to drawing by brush on color layer

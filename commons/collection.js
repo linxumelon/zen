@@ -6,11 +6,11 @@ var createThumb = function(fileObj, readStream, writeStream) {
 
 var crop = function(fileObj, readStream, writeStream) {
   //  transforms image into 700x700px square
-  gm(readStream,fileObj.name()).resize('700','700' + '^').gravity('Center').extent('700', '700').stream().pipe(writeStream);
+  gm(readStream,fileObj.name()).resize('700','700' + '^').gravity('Center').extent('700', '700').stream('png').pipe(writeStream);
 };
 
-var imageStore = new FS.Store.GridFS("images", {transformWrite: crop });
-var thumbStore = new FS.Store.GridFS("thumbs", {path:" /uploads/thumbs", transformWrite: createThumb });
+var imageStore = new FS.Store.GridFS("cropped", {path: "/uploads/images", transformWrite: crop });
+var thumbStore = new FS.Store.GridFS("thumbs", {path: "/uploads/thumbs", transformWrite: createThumb });
 Images = new FS.Collection("images", {
   stores: [
 		imageStore,

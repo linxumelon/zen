@@ -10,13 +10,13 @@ h1 {
     margin: 0;
     padding: 0;
     height: 130px;
-    position: absolute;
+    position: relative;
     left: 0px;
 }
 header {
     font-family: CONFUSION GIRL;
     font-size: 70px;
-    position: absolute;
+    position: relative;
     left: 100px;
 }
 

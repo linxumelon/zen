@@ -53,6 +53,11 @@ Template.uploadForm.events({
 				console.log("error"+ error.reason);
 			  });
 			}
+
+			var imageURL = "cfs/files/images" ; //how to get the path of this image orz
+			var params = {};
+			var queryParams = {image: imageURL}
+			FlowRouter.go("/color", params, queryParams);
 			
 		// });
 	}
