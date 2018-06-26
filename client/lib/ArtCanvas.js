@@ -335,8 +335,8 @@
 
     /** Constant values as class properties (static properties) */
     ArtCanvas.DEFAULT_SIZES        = {};
-    ArtCanvas.DEFAULT_SIZES.WIDTH  = 300;
-    ArtCanvas.DEFAULT_SIZES.HEIGHT = 300;
+    ArtCanvas.DEFAULT_SIZES.WIDTH  = 700;
+    ArtCanvas.DEFAULT_SIZES.HEIGHT = 700;
 
     /**
      * This method is getter for container width for drawing
@@ -2131,9 +2131,9 @@
             this.context.strokeStyle = new ArtCanvas.Color(0, 0, 0, 1.0).toString();
             this.context.fillStyle   = new ArtCanvas.Color(0, 0, 0, 1.0).toString();
             this.context.globalAlpha = 1.0;
-            this.context.lineWidth   = 1.0;
-            this.context.lineCap     = 'butt';
-            this.context.lineJoin    = 'miter';
+            this.context.lineWidth   = 10.0;
+            this.context.lineCap     = 'round';
+            this.context.lineJoin    = 'round';
 
             /** {@type Array.<Point|Rectangle|Circle|Line|Text|Filter|DrawableImage>} */
             this.paths = [];
@@ -2499,7 +2499,7 @@
          */
         Canvas.prototype.setFillStyle = function(fillStyle) {
             this.context.fillStyle = String(fillStyle);
-            this.draw(true);
+            //this.draw(true);
 
             return this;
         };
@@ -2519,7 +2519,7 @@
          */
         Canvas.prototype.setStrokeStyle = function(strokeStyle) {
             this.context.strokeStyle = String(strokeStyle);
-            this.draw(true);
+            //this.draw(true);
 
             return this;
         };
@@ -2542,7 +2542,7 @@
 
             if (w > 0) {
                 this.context.lineWidth= w;
-                this.draw(true);
+                //this.draw(true);
             }
 
             return this;
@@ -2658,7 +2658,7 @@
 
             if ((a >= 0) && (a <= 1)) {
                 this.context.globalAlpha = a;
-                this.draw(true);
+                //this.draw(true);
             }
 
             return this;
