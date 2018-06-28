@@ -31,7 +31,7 @@ $(function() {
 
     artCanvas.setCallbacks(callbacks);
 
-    var colorThreshold = 15;
+    /*var colorThreshold = 15;
     var blurRadius = 5;
     var simplifyTolerant = 0;
     var simplifyCount = 30;
@@ -55,9 +55,9 @@ $(function() {
     var tempCtx = tempCanvas.getContext("2d");
     tempCanvas.width = imageInfo.width;
     tempCanvas.height = imageInfo.height;
-    tempCtx.drawImage(img[0], 0, 0);
+    tempCtx.drawImage(src, 0, 0);
     imageInfo.data = tempCtx.getImageData(0, 0, imageInfo.width, imageInfo.height).data;
-
+*/
     $('#colorPicker').colpick({
         color: '123456',
         flat: true,
