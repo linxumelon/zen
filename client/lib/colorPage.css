@@ -9,17 +9,16 @@
 #canvas-container { /*canvas itself*/
   float: left;
   background-color: darkgrey;
-  margin:1rem auto 1rem 0rem;
-  position: absolute;
-  height: 350px;
-  width: 350px;
+  position: relative;
+  height: 700px;
+  width: 700px;
   margin: 0px auto;
 }
 
 .vert-bar{
   float: left;
   margin-top: 53px;
-  postion: relative;
+  position: relative;
   background-color: dimgrey;
   width: 200px;
 } 

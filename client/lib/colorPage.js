@@ -2,34 +2,106 @@ import {$,jQuery} from 'meteor/jquery';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
 $(function() {
-    var canvas    = document.querySelector('canvas');
-    var container = canvas.parentNode;
-    var width     = 700;  // px
-    var height    = 700;  // px
+    var colorLayer    = document.querySelector('#colorLayer');
+    var lineLayer    = document.querySelector('#lineLayer');
+    colorLayer.setAttribute('width', 700);// px
+    colorLayer.setAttribute('height', 700);// px
+    colorLayer.setAttribute('id', 'colorLayer');
+    lineLayer.setAttribute('width', 700);// px
+    lineLayer.setAttribute('height', 700);// px
+    lineLayer.setAttribute('id', 'lineLayer');
 
-    // Create the instance of ArtCanvas
-    var artCanvas = new ArtCanvas(container, canvas, width, height);
-
-    //creates new layer, line layer is 1, color layer is 0
-    artCanvas.addLayer(width, height);
+    var colorContext = colorLayer.getContext("2d");
+    var lineContext = lineLayer.getContext("2d");
+    var colorLayerData;
+    var lineLayerData;
 
     //imports template png to line layer
-    artCanvas.selectLayer(1);
-    var src = FlowRouter.getQueryParam("image");
-    artCanvas.drawImage(src);
+    var templateImage = new Image();
+    templateImage.src = FlowRouter.getQueryParam("image");
 
-    //set to drawing by brush on color layer
-    artCanvas.selectLayer(0);
-    artCanvas.drawImage(src);
-    artCanvas.setMode(ArtCanvas.Mode.HAND);
+    templateImage.onload = function() {
+        lineContext.drawImage(templateImage, 0, 0);
+        try {
+            lineLayerData = lineContext.getImageData(0, 0, 700, 700);
+            colorLayerData = colorContext.getImageData(0, 0, 700, 700);
+        } catch (ex) {
 
-    var callbacks = {
-        drawstart   : function() {},
-        drawmove    : function() {},
-        drawend     : function() {}
+        }
+        resourceLoaded();
     };
+    
+    function resourceLoaded() {
+        redraw();
+    }
 
-    artCanvas.setCallbacks(callbacks);
+    var paintMode = true; //false is fill mode
+    var lineWidth = 10;
+    var color = "#df4b26";
+    var paint = false;
+
+
+    var clickX = new Array();
+    var clickY = new Array();
+    var clickDrag = new Array();
+    var clickTool = new Array();
+    var clickColor = new Array();
+    var clickSize = new Array();
+
+    if (paintMode) {
+        $('#lineLayer').mousedown(function(e){
+          var mouseX = e.pageX - this.offsetLeft;
+          var mouseY = e.pageY - this.offsetTop;
+                
+          paint = true;
+          addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+          redraw();
+        });
+        
+        $('#lineLayer').mousemove(function(e){
+          if(paint){
+            addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+            redraw();
+          }
+        });
+
+        $('#lineLayer').mouseup(function(e){
+          paint = false;
+        });
+    }
+    
+    
+    
+
+    function addClick(x, y, dragging) {
+      clickX.push(x);
+      clickY.push(y);
+      clickDrag.push(dragging);
+      clickColor.push(color);
+      clickSize.push(lineWidth);
+    }
+
+    function redraw(){
+      colorContext.clearRect(0, 0, 700, 700); // Clears the canvas
+      colorContext.strokeStyle = color;
+      colorContext.lineJoin = "round";
+      colorContext.lineWidth = lineWidth;
+                
+      for(var i=0; i < clickX.length; i++) {        
+        colorContext.beginPath();
+        if(clickDrag[i] && i){
+          colorContext.moveTo(clickX[i-1], clickY[i-1]);
+         }else{
+           colorContext.moveTo(clickX[i]-1, clickY[i]);
+         }
+         colorContext.lineTo(clickX[i], clickY[i]);
+         colorContext.closePath();
+         colorContext.stroke();
+      }
+      
+    }
+    
+    
 
     /*var colorThreshold = 15;
     var blurRadius = 5;
@@ -67,43 +139,40 @@ $(function() {
         onChange: function(hsb,hex,rgb,el,bySetColor) {
             var hexWithHex = '#' + hex;
             $('#colorPicker').val(hexWithHex);
-            artCanvas.setStrokeStyle(hexWithHex);
-            artCanvas.setFillStyle(hexWithHex);
+            color = hexWithHex;
         }
     });
 
     $('#button-brush').click(function() {
-        artCanvas.setMode(ArtCanvas.Mode.HAND);
+        paintMode = true;
     });
 
     $('#button-fill').click(function() {
-        artCanvas.setMode(ArtCanvas.Mode.TOOL);
-        $('canvas').off('.art-canvas').on('click.art-canvas', function(event) {
-            artCanvas.fill(event.originalEvent, artCanvas.getFillStyle());
-        });    
+        paintMode = false;
     });
 
     $('button-line-layer').click(function() {
-        artCanvas.selectLayer(1);
+        
     });
 
     $('button-color-layer').click(function() {
-        artCanvas.selectLayer(0);
+        
     });
 
     $('#button-eyedrop').click(function() {
-        var prevMode = artCanvas.getMode();
-        artCanvas.setMode(ArtCanvas.Mode.TOOL);
-        $('canvas').off('.art-canvas').on('click.art-canvas', function(event) {
-            var color = artCanvas.pickColor(event.originalEvent);
-            var rgba = color.toString();  // rgba(...)
-            var hex = color.toHexString(); // #...
-            artCanvas.setFillStyle(rgba);
-            artCanvas.setStrokeStyle(rgba);
-            $('#colorPicker').colpickSetColor(hex,true); //using colpick
+        $('#canvas').mousedown(function(e){
+            var mouseX = e.pageX - this.offsetLeft;
+            var mouseY = e.pageY - this.offsetTop;
+            var red = colorLayerData.data[pixelPos];
+            var green = colorLayerData.data[pixelPos + 1];
+            var blue = colorLayerData.data[pixelPos + 2];
+            var alpha = colorLayerData.data[pixelPos + 3];
+            var rgb = {r:red, g:green, b:blue};
+
+            $('#colorPicker').colpickSetColor(rgb,true); //using colpick
 
         });
-        artCanvas.setMode(prevMode);
+   
     });
         
 
