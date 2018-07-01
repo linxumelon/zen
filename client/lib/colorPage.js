@@ -50,27 +50,36 @@ $(function() {
     var clickColor = new Array();
     var clickSize = new Array();
 
-    if (mode === "brush") {
-        $('#lineLayer').mousedown(function(e){
-          var mouseX = e.pageX - $('#lineLayer').offset().left;
-          var mouseY = e.pageY - $('#lineLayer').offset().top;
-                
-          paint = true;
-          addClick(e.pageX - $('#lineLayer').offset().left, e.pageY - $('#lineLayer').offset().top);
-          redraw();
-        });
-        
-        $('#lineLayer').mousemove(function(e){
-          if(paint){
-            addClick(e.pageX - $('#lineLayer').offset().left, e.pageY - $('#lineLayer').offset().top, true);
-            redraw();
-          }
-        });
+    
 
-        $('#lineLayer').mouseup(function(e){
-          paint = false;
-        });
-    }
+    $('#lineLayer').mousedown(function(e){
+      var mouseX = e.pageX - $('#lineLayer').offset().left;
+      var mouseY = e.pageY - $('#lineLayer').offset().top;
+         
+      if (mode === "brush") {          
+        paint = true;
+        addClick(e.pageX - $('#lineLayer').offset().left, e.pageY - $('#lineLayer').offset().top);
+        redraw();
+      } else if (mode === "dropper") {
+        var p = colorContext.getImageData(mouseX, mouseY, 1, 1).data;
+        var hex = ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
+        $('#colorPicker').colpickSetColor(hex,true); //using colpick
+      } else if (mode === "fill") {
+
+      }
+    });
+    
+    $('#lineLayer').mousemove(function(e){
+      if(paint){
+        addClick(e.pageX - $('#lineLayer').offset().left, e.pageY - $('#lineLayer').offset().top, true);
+        redraw();
+      }
+    });
+
+    $('#lineLayer').mouseup(function(e){
+      paint = false;
+    });
+
     
     
     
@@ -161,24 +170,14 @@ $(function() {
         
     });
 
-    $('#button-eyedrop').click(function() {
-      previousMode = mode;
+    $('#button-eyedrop').click(function() {    
       mode = "dropper";
-        $('#lineLayer').mousedown(function(e){
-            var mouseX = e.pageX - $('#lineLayer').offset().left;
-            var mouseY = e.pageY - $('#lineLayer').offset().top;
-            var p = colorContext.getImageData(mouseX, mouseY, 1, 1).data;
-            var hex = ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
-
-            $('#colorPicker').colpickSetColor(hex,true); //using colpick
-
-        });
-      mode = previousMode;
     });
         
     function rgbToHex(r, g, b) {
-        if (r > 255 || g > 255 || b > 255)
+        if (r > 255 || g > 255 || b > 255) {
             throw "Invalid color component";
+        }    
         return ((r << 16) | (g << 8) | b).toString(16);
     }    
 
