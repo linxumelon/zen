@@ -93,8 +93,10 @@ $(function() {
     }
 
     function redraw(){
-      //colorContext.clearRect(0, 0, 700, 700);
+      colorContext.clearRect(0, 0, 700, 700);
+      colorContext.drawImage(templateImage, 0, 0);
       colorContext.lineJoin = "round";
+      console.log(clickX.length);
                 
       for(var i=0; i < clickX.length; i++) {        
         colorContext.beginPath();
@@ -182,13 +184,21 @@ $(function() {
     }    
 
     $('#button-undo').click(function() {
-      
+      undo();
+      function undo() {
         clickX.pop();
         clickY.pop();
-        clickDrag.pop();
+        var drag = clickDrag.pop();
         clickTool.pop();
         clickColor.pop();
         clickSize.pop();
+        if (drag) {
+          undo();
+        } else {
+          return;
+        }
+      }
+    
         redraw();
      
     });
