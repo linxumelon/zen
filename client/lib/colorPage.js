@@ -31,7 +31,6 @@ $(function() {
     };
 
     templateImage.src = FlowRouter.getQueryParam("image");
-    reload();
     
     function resourceLoaded() {
         redraw();
@@ -84,7 +83,6 @@ $(function() {
     }
 
     function redraw(){
-    //   colorContext.clearRect(0, 0, 700, 700); // Clears the canvas
       colorContext.strokeStyle = color;
       colorContext.lineJoin = "round";
       colorContext.lineWidth = lineWidth;
