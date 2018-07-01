@@ -46,10 +46,16 @@ $(function() {
     var clickX = new Array();
     var clickY = new Array();
     var clickDrag = new Array();
-    var clickTool = new Array();
+    var clickMode = new Array();
     var clickColor = new Array();
     var clickSize = new Array();
 
+    var redoX = new Array();
+    var redoY = new Array();
+    var redoDrag = new Array();
+    var redoMode = new Array();
+    var redoColor = new Array();
+    var redoSize = new Array();
     
 
     $('#lineLayer').mousedown(function(e){
@@ -89,7 +95,14 @@ $(function() {
       clickY.push(y);
       clickDrag.push(dragging);
       clickColor.push(color);
+      clickMode.push(mode);
       clickSize.push(lineWidth);
+      redoX = [];
+      redoY = [];
+      redoMode = [];
+      redoDrag = [];
+      redoColor = [];
+      redoSize = [];
     }
 
     function redraw(){
@@ -186,12 +199,13 @@ $(function() {
     $('#button-undo').click(function() {
       undo();
       function undo() {
-        clickX.pop();
-        clickY.pop();
+        redoX.push(clickX.pop());
+        redoY.push(clickY.pop());
         var drag = clickDrag.pop();
-        clickTool.pop();
-        clickColor.pop();
-        clickSize.pop();
+        redoDrag.push(drag);
+        redoMode.push(clickMode.pop());
+        redoColor.push(clickColor.pop());
+        redoSize.push(clickSize.pop());
         if (drag) {
           undo();
         } else {
@@ -204,6 +218,23 @@ $(function() {
     });
 
     $('#button-redo').click(function() {
+      redo();
+      function redo() {
+        clickX.push(redoX.pop());
+        clickY.push(redoY.pop());
+        var drag = redoDrag.pop();
+        clickDrag.push(drag);
+        clickMode.push(redoMode.pop());
+        clickColor.push(redoColor.pop());
+        clickSize.push(redoSize.pop());
+        if (redoDrag.length > 0 && redoDrag[redoDrag.length - 1]) {
+          redo();
+        } else {
+          return;
+        }
+      }
+    
+        redraw();
         
     });
 
