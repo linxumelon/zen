@@ -18,6 +18,7 @@ $(function() {
 
     //imports template png to line layer
     var templateImage = new Image();
+    templateImage.src = FlowRouter.getQueryParam("image");
 
     templateImage.onload = function() {
         colorContext.drawImage(templateImage, 0, 0);
@@ -30,7 +31,7 @@ $(function() {
         resourceLoaded();
     };
 
-    templateImage.src = FlowRouter.getQueryParam("image");
+  
     
     function resourceLoaded() {
         redraw();
@@ -83,9 +84,8 @@ $(function() {
     }
 
     function redraw(){
-      colorContext.strokeStyle = color;
+      //colorContext.clearRect(0, 0, 700, 700);
       colorContext.lineJoin = "round";
-      colorContext.lineWidth = lineWidth;
                 
       for(var i=0; i < clickX.length; i++) {        
         colorContext.beginPath();
@@ -96,6 +96,8 @@ $(function() {
          }
          colorContext.lineTo(clickX[i], clickY[i]);
          colorContext.closePath();
+         colorContext.strokeStyle = clickColor[i];
+         colorContext.lineWidth = clickSize[i];
          colorContext.stroke();
       }
       
@@ -131,7 +133,7 @@ $(function() {
     imageInfo.data = tempCtx.getImageData(0, 0, imageInfo.width, imageInfo.height).data;
 */
     $('#colorPicker').colpick({
-        color: '123456',
+        color: 'df4b26',
         flat: true,
         layout: 'hex',
         colorScheme: 'dark',
