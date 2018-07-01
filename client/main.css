@@ -115,7 +115,7 @@ img[src*="sample"] {
 .vert-bar{
   float: left;
   margin-top: 53px;
-  postion: relative;
+  position: relative;
   background-color: dimgrey;
   width: 200px;
 } 

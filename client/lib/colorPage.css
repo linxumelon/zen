@@ -9,7 +9,7 @@
 #canvas-container { /*canvas itself*/
   float: left;
   background-color: darkgrey;
-  position: relative;
+  position: sticky;
   height: 700px;
   width: 700px;
   margin: 0px auto;
@@ -18,9 +18,10 @@
 .vert-bar{
   float: left;
   margin-top: 53px;
-  position: relative;
+  margin-left:-50px;
   background-color: dimgrey;
   width: 200px;
+  position:sticky;
 } 
 
 .vert-bar button:hover {

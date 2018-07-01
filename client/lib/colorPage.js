@@ -2,8 +2,8 @@ import {$,jQuery} from 'meteor/jquery';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
 $(function() {
-    var colorLayer    = document.querySelector('#colorLayer');
-    var lineLayer    = document.querySelector('#lineLayer');
+    var colorLayer    = document.getElementById('colorLayer');
+    var lineLayer    = document.getElementById('lineLayer');
     colorLayer.setAttribute('width', 700);// px
     colorLayer.setAttribute('height', 700);// px
     colorLayer.setAttribute('id', 'colorLayer');
@@ -18,10 +18,9 @@ $(function() {
 
     //imports template png to line layer
     var templateImage = new Image();
-    templateImage.src = FlowRouter.getQueryParam("image");
 
     templateImage.onload = function() {
-        lineContext.drawImage(templateImage, 0, 0);
+        colorContext.drawImage(templateImage, 0, 0);
         try {
             lineLayerData = lineContext.getImageData(0, 0, 700, 700);
             colorLayerData = colorContext.getImageData(0, 0, 700, 700);
@@ -30,6 +29,9 @@ $(function() {
         }
         resourceLoaded();
     };
+
+    templateImage.src = FlowRouter.getQueryParam("image");
+    reload();
     
     function resourceLoaded() {
         redraw();
@@ -82,7 +84,7 @@ $(function() {
     }
 
     function redraw(){
-      colorContext.clearRect(0, 0, 700, 700); // Clears the canvas
+    //   colorContext.clearRect(0, 0, 700, 700); // Clears the canvas
       colorContext.strokeStyle = color;
       colorContext.lineJoin = "round";
       colorContext.lineWidth = lineWidth;
