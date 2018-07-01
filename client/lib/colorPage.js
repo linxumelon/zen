@@ -4,6 +4,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 $(function() {
     var colorLayer    = document.getElementById('colorLayer');
     var lineLayer    = document.getElementById('lineLayer');
+
     colorLayer.setAttribute('width', 700);// px
     colorLayer.setAttribute('height', 700);// px
     colorLayer.setAttribute('id', 'colorLayer');
@@ -38,7 +39,8 @@ $(function() {
     }
 
     var mode = "brush"; //"fill" is fill mode, "dropper" is eyedropper
-    var lineWidth = 10;
+    var lineWidth = 50;
+    var opacity = 100; //percent
     var color = "#df4b26";
     var paint = false;
 
@@ -49,6 +51,7 @@ $(function() {
     var clickMode = new Array();
     var clickColor = new Array();
     var clickSize = new Array();
+    var clickOpacity = new Array();
 
     var redoX = new Array();
     var redoY = new Array();
@@ -56,7 +59,7 @@ $(function() {
     var redoMode = new Array();
     var redoColor = new Array();
     var redoSize = new Array();
-    
+    var redoOpacity = new Array();
 
     $('#lineLayer').mousedown(function(e){
       var mouseX = e.pageX - $('#lineLayer').offset().left;
@@ -97,22 +100,24 @@ $(function() {
       clickColor.push(color);
       clickMode.push(mode);
       clickSize.push(lineWidth);
+      clickOpacity.push(opacity);
       redoX = [];
       redoY = [];
       redoMode = [];
       redoDrag = [];
       redoColor = [];
       redoSize = [];
+      redoOpacity = [];
     }
 
     function redraw(){
       colorContext.clearRect(0, 0, 700, 700);
-      colorContext.drawImage(templateImage, 0, 0);
       colorContext.lineJoin = "round";
       console.log(clickX.length);
                 
       for(var i=0; i < clickX.length; i++) {        
         colorContext.beginPath();
+        colorContext.globalAlpha = clickOpacity[i] / 100;
         if(clickDrag[i] && i){
           colorContext.moveTo(clickX[i-1], clickY[i-1]);
          }else{
@@ -124,7 +129,8 @@ $(function() {
          colorContext.lineWidth = clickSize[i];
          colorContext.stroke();
       }
-      
+      colorContext.globalAlpha = 1;
+      colorContext.drawImage(templateImage, 0, 0);
     }
     
     
@@ -206,6 +212,7 @@ $(function() {
         redoMode.push(clickMode.pop());
         redoColor.push(clickColor.pop());
         redoSize.push(clickSize.pop());
+        redoOpacity.push(clickOpacity.pop());
         if (drag) {
           undo();
         } else {
@@ -227,6 +234,7 @@ $(function() {
         clickMode.push(redoMode.pop());
         clickColor.push(redoColor.pop());
         clickSize.push(redoSize.pop());
+        clickOpacity.push(redoOpacity.pop());
         if (redoDrag.length > 0 && redoDrag[redoDrag.length - 1]) {
           redo();
         } else {
@@ -246,6 +254,23 @@ $(function() {
 
     });
 
+    $('#sizeSlide').slider({
+      min: 1,
+      max: 100,
+      value: 50,
+      change: function(event, ui) {
+        lineWidth = ui.value;
+      }
+    });
+    
+    $('#opacitySlide').slider({
+      min: 1,
+      max: 100,
+      value: 100,
+      change: function(event, ui) {
+        opacity = ui.value;
+      }
+    });
 
     $('#button-select').click(function() {
         $('canvas').on('click', function (e) {
