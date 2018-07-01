@@ -65,7 +65,7 @@ $(function() {
         var hex = ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
         $('#colorPicker').colpickSetColor(hex,true); //using colpick
       } else if (mode === "fill") {
-
+        addClick(mouseX, mouseY, false);
       }
     });
     
@@ -182,15 +182,19 @@ $(function() {
     }    
 
     $('#button-undo').click(function() {
-        if (!artCanvas.undo()) {
-            window.alert('Cannot Undo');
-        }
+      
+        clickX.pop();
+        clickY.pop();
+        clickDrag.pop();
+        clickTool.pop();
+        clickColor.pop();
+        clickSize.pop();
+        redraw();
+     
     });
 
     $('#button-redo').click(function() {
-        if (!artCanvas.redo()) {
-            window.alert('Cannot Redo');
-        }
+        
     });
 
     $('#button-zoom-in').click(function() {
