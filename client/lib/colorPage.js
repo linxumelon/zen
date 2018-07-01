@@ -37,7 +37,7 @@ $(function() {
         redraw();
     }
 
-    var paintMode = true; //false is fill mode
+    var mode = "brush"; //"fill" is fill mode, "dropper" is eyedropper
     var lineWidth = 10;
     var color = "#df4b26";
     var paint = false;
@@ -50,19 +50,19 @@ $(function() {
     var clickColor = new Array();
     var clickSize = new Array();
 
-    if (paintMode) {
+    if (mode === "brush") {
         $('#lineLayer').mousedown(function(e){
-          var mouseX = e.pageX - this.offsetLeft;
-          var mouseY = e.pageY - this.offsetTop;
+          var mouseX = e.pageX - $('#lineLayer').offset().left;
+          var mouseY = e.pageY - $('#lineLayer').offset().top;
                 
           paint = true;
-          addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+          addClick(e.pageX - $('#lineLayer').offset().left, e.pageY - $('#lineLayer').offset().top);
           redraw();
         });
         
         $('#lineLayer').mousemove(function(e){
           if(paint){
-            addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+            addClick(e.pageX - $('#lineLayer').offset().left, e.pageY - $('#lineLayer').offset().top, true);
             redraw();
           }
         });
@@ -146,11 +146,11 @@ $(function() {
     });
 
     $('#button-brush').click(function() {
-        paintMode = true;
+        mode = "brush";
     });
 
     $('#button-fill').click(function() {
-        paintMode = false;
+        mode = "fill";
     });
 
     $('button-line-layer').click(function() {
@@ -162,21 +162,25 @@ $(function() {
     });
 
     $('#button-eyedrop').click(function() {
-        $('#canvas').mousedown(function(e){
-            var mouseX = e.pageX - this.offsetLeft;
-            var mouseY = e.pageY - this.offsetTop;
-            var red = colorLayerData.data[pixelPos];
-            var green = colorLayerData.data[pixelPos + 1];
-            var blue = colorLayerData.data[pixelPos + 2];
-            var alpha = colorLayerData.data[pixelPos + 3];
-            var rgb = {r:red, g:green, b:blue};
+      previousMode = mode;
+      mode = "dropper";
+        $('#lineLayer').mousedown(function(e){
+            var mouseX = e.pageX - $('#lineLayer').offset().left;
+            var mouseY = e.pageY - $('#lineLayer').offset().top;
+            var p = colorContext.getImageData(mouseX, mouseY, 1, 1).data;
+            var hex = ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
 
-            $('#colorPicker').colpickSetColor(rgb,true); //using colpick
+            $('#colorPicker').colpickSetColor(hex,true); //using colpick
 
         });
-   
+      mode = previousMode;
     });
         
+    function rgbToHex(r, g, b) {
+        if (r > 255 || g > 255 || b > 255)
+            throw "Invalid color component";
+        return ((r << 16) | (g << 8) | b).toString(16);
+    }    
 
     $('#button-undo').click(function() {
         if (!artCanvas.undo()) {
