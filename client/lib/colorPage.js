@@ -112,6 +112,7 @@ $(function() {
 
     function redraw(){
       colorContext.clearRect(0, 0, 700, 700);
+      colorContext.drawImage(templateImage, 0, 0);
       colorContext.lineJoin = "round";
       console.log(clickX.length);
                 
@@ -130,7 +131,7 @@ $(function() {
          colorContext.stroke();
       }
       colorContext.globalAlpha = 1;
-      colorContext.drawImage(templateImage, 0, 0);
+      
     }
     
     
@@ -296,7 +297,18 @@ $(function() {
           drawBorder(true);
         }
       };
+
+      var matchOutlineColor = function(r, g, b, a){
+          return (r + g + b < 100 && a === 255);
+      }
+
+      var copyImage = function() {
+
+      }
       
+      var colorPixel =  function (pixelPos, r, g, b, a) {
+        
+      }
       var drawBorder = function () {
         if (masks.length) {
 
