@@ -4,9 +4,26 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 $(function() {
     var colorLayer    = document.getElementById('colorLayer');
     var lineLayer    = document.getElementById('lineLayer');
-    var backUpImage = document.createElement("canvas");
-    backUpImage.id = "backUpImage";
-    
+
+    var matchOutlineColor = function(r, g, b, a){
+        return (r + g + b < 100 && a >= 100);
+    };
+    //turns non-black pixels to transparent
+    var rmWhiteP = function(canvas, ctx) {
+        var pixelsD = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        for (var i = 0; i < pixelsD.length; i+= 4 ){
+           var r = pixelsD[i];
+           var g = pixelsD[i+1];
+           var b = pixelsD[i+2];
+           var a = pixelsD[i+3];
+           
+           if (matchOutlineColor(r, g, b, a) ){
+               pixelsD[i+3] = 0.0;
+               console.log(pixelsD[i+3]);
+           }
+        }
+        return ctx;
+    }
 
     colorLayer.setAttribute('width', 700);// px
     colorLayer.setAttribute('height', 700);// px
@@ -27,6 +44,7 @@ $(function() {
     templateImage.onload = function() {
         colorContext.drawImage(templateImage, 0, 0);
         lineContext.drawImage(templateImage, 0, 0);
+        lineContext = rmWhiteP(lineLayer, lineContext);
         try {
             lineLayerData = lineContext.getImageData(0, 0, 700, 700);
             colorLayerData = colorContext.getImageData(0, 0, 700, 700);
@@ -36,27 +54,6 @@ $(function() {
         resourceLoaded();
     };
 
-    var matchOutlineColor = function(r, g, b, a){
-        return (r + g + b < 100 && a >= 100);
-    };
-    //turns non-black pixels to transparent
-    var rmWhiteP = function(canvas, ctx) {
-        var pixelsD = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-        for (var i = 0; i < pixelsD.length; i+= 4 ){
-           var r = pixelsD[i];
-           var g = pixelsD[i+1];
-           var b = pixelsD[i+2];
-           var a = pixelsD[i+3];
-           
-           if (matchOutlineColor(r, g, b, a) ){
-               pixelsD.data[i+3] = 0.0;
-           }
-        }
-        console.log(ctx.getImageData(1, 1, 1, 1).data);
-        return ctx;
-    }
-
-    lineContext = rmWhiteP(lineLayer, lineContext);
     function resourceLoaded() {
         redraw();
     }
