@@ -10,7 +10,8 @@ $(function() {
     };
     //turns non-black pixels to transparent
     var rmWhiteP = function(canvas, ctx) {
-        var pixelsD = ctx.getImageData(0, 0, 700, 700).data;
+        var pixels = ctx.getImageData(0, 0, 700, 700);
+        var pixelsD = pixels.data;
         for (var i = 0; i < pixelsD.length; i+= 4 ){
            var r = pixelsD[i];
            var g = pixelsD[i+1];
@@ -22,7 +23,7 @@ $(function() {
                console.log(pixelsD[i+3]);
            }
         }
-        ctx.putImageData(ctx.getImageData(0, 0, 700, 700), 0, 0);
+        ctx.putImageData(pixels, 0, 0);
         console.log("ok");
         return ctx;
     }
@@ -45,11 +46,11 @@ $(function() {
 
     templateImage.onload = function() {
       console.log("loaded");
-        //colorContext.drawImage(templateImage, 0, 0);
+        colorContext.drawImage(templateImage, 0, 0);
         lineContext.drawImage(templateImage, 0, 0);
-        //lineContext = rmWhiteP(lineLayer, lineContext);
+        lineContext = rmWhiteP(lineLayer, lineContext);
         try {
-            lineLayerData = lineContext.getImageData(0, 0, 700, 700);
+            // lineLayerData = lineContext.getImageData(0, 0, 700, 700);
             colorLayerData = colorContext.getImageData(0, 0, 700, 700);
         } catch (ex) {
 
@@ -140,7 +141,7 @@ $(function() {
 
     function redraw(){
       colorContext.clearRect(0, 0, 700, 700);
-      //colorContext.drawImage(templateImage, 0, 0);
+      colorContext.drawImage(templateImage, 0, 0);
       colorContext.lineJoin = "round";
                 
       for(var i=0; i < clickX.length; i++) {  
@@ -166,20 +167,20 @@ $(function() {
       
     }
     
-    function floodFill(x, y, color) {
-      var stack = [[x, y]];
+    // function floodFill(x, y, color) {
+    //   var stack = [[x, y]];
 
-      var rgb = hexToRgb(color);
-      var r = rgb.r;  
-      var g = rgb.g;
-      var b = rgb.b;
+    //   var rgb = hexToRgb(color);
+    //   var r = rgb.r;  
+    //   var g = rgb.g;
+    //   var b = rgb.b;
   
-      while (stack.length) {
-        var current = stack.pop();
-        var curX = current[0];
-        var curY = current[1];
-        var pixelPos = (curY * 700 + curX) * 4;
-        console.log(notLine(pixelPos));
+    //   while (stack.length) {
+    //     var current = stack.pop();
+    //     var curX = current[0];
+    //     var curY = current[1];
+    //     var pixelPos = (curY * 700 + curX) * 4;
+    //     console.log(notLine(pixelPos));
         /*
         if (curX >= 0 && curX <= 700 && 
             curY >= 0 && curY <= 700 && 
@@ -199,9 +200,9 @@ $(function() {
         } else {
           console.log("end");
         }*/
-      }
+    //   }
 
-    }
+    // }
     
     function notLine(pos) {
       var r = lineLayerData.data[pos];
@@ -381,7 +382,7 @@ $(function() {
             height: imageInfo.height,
             bytes: 4
           };
-          mask = MagicWand.floodFill(image, downPoint.x, downPoint.y, currentThreshold);
+          // mask = MagicWand.floodFill(image, downPoint.x, downPoint.y, currentThreshold);
           mask = MagicWand.gaussBlurOnlyBorder(mask, blurRadius);
           masks.push(mask);
           cacheInds.push(MagicWand.getBorderIndices(mask));
