@@ -18,7 +18,7 @@ $(function() {
            var b = pixelsD[i+2];
            var a = pixelsD[i+3];
            
-           if (matchOutlineColor(r, g, b, a) ){
+           if (!matchOutlineColor(r, g, b, a) ){
                pixelsD[i+3] = 0.0;
                console.log(pixelsD[i+3]);
            }
