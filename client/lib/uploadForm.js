@@ -8,9 +8,9 @@ Meteor.subscribe('images');
 Template.uploadForm.events({
 	'submit form': function(event) {
 		event.preventDefault();
-		const isPublic = document.getElementById("shareSettings").checked;
+		//const isPublic = document.getElementById("shareSettings").checked;
 		var newFile = event.target.fileInput;
-		console.log(isPublic);			
+		//console.log(isPublic);			
 		console.log("change has happened to file input");
 		console.log(newFile);
 		// FS.Utility.eachFile(event,function(file) {
@@ -57,8 +57,8 @@ Template.uploadForm.events({
 			var imageURL = "cfs/files/images" ; //how to get the path of this image orz
 			var params = {};
 			var queryParams = {image: imageURL}
-			FlowRouter.go("/color", params, queryParams);
-			
+			//FlowRouter.go("/color", params, queryParams);
+			alert("Successfully uploaded!");
 		// });
 	}
 	

@@ -10,7 +10,7 @@ $(function() {
     };
     //turns non-black pixels to transparent
     var rmWhiteP = function(canvas, ctx) {
-        var pixelsD = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        var pixelsD = ctx.getImageData(0, 0, 700, 700).data;
         for (var i = 0; i < pixelsD.length; i+= 4 ){
            var r = pixelsD[i];
            var g = pixelsD[i+1];
@@ -22,6 +22,8 @@ $(function() {
                console.log(pixelsD[i+3]);
            }
         }
+        ctx.putImageData(ctx.getImageData(0, 0, 700, 700), 0, 0);
+        console.log("ok");
         return ctx;
     }
 
@@ -42,9 +44,10 @@ $(function() {
     templateImage.src = FlowRouter.getQueryParam("image");
 
     templateImage.onload = function() {
-        colorContext.drawImage(templateImage, 0, 0);
+      console.log("loaded");
+        //colorContext.drawImage(templateImage, 0, 0);
         lineContext.drawImage(templateImage, 0, 0);
-        lineContext = rmWhiteP(lineLayer, lineContext);
+        //lineContext = rmWhiteP(lineLayer, lineContext);
         try {
             lineLayerData = lineContext.getImageData(0, 0, 700, 700);
             colorLayerData = colorContext.getImageData(0, 0, 700, 700);
@@ -95,6 +98,7 @@ $(function() {
         $('#colorPicker').colpickSetColor(hex,true); //using colpick
       } else if (mode === "fill") {
         addClick(mouseX, mouseY, false);
+        redraw();
       }
     });
     
@@ -136,29 +140,92 @@ $(function() {
 
     function redraw(){
       colorContext.clearRect(0, 0, 700, 700);
-      colorContext.drawImage(templateImage, 0, 0);
+      //colorContext.drawImage(templateImage, 0, 0);
       colorContext.lineJoin = "round";
-      console.log(clickX.length);
                 
-      for(var i=0; i < clickX.length; i++) {        
-        colorContext.beginPath();
-        colorContext.globalAlpha = clickOpacity[i] / 100;
-        if(clickDrag[i] && i){
-          colorContext.moveTo(clickX[i-1], clickY[i-1]);
-         }else{
-           colorContext.moveTo(clickX[i]-1, clickY[i]);
-         }
-         colorContext.lineTo(clickX[i], clickY[i]);
-         colorContext.closePath();
-         colorContext.strokeStyle = clickColor[i];
-         colorContext.lineWidth = clickSize[i];
-         colorContext.stroke();
+      for(var i=0; i < clickX.length; i++) {  
+        if (clickMode[i] === "brush") {
+          colorContext.beginPath();
+          colorContext.globalAlpha = clickOpacity[i] / 100;
+          if(clickDrag[i] && i){
+            colorContext.moveTo(clickX[i-1], clickY[i-1]);
+           }else{
+             colorContext.moveTo(clickX[i]-1, clickY[i]);
+           }
+           colorContext.lineTo(clickX[i], clickY[i]);
+           colorContext.closePath();
+           colorContext.strokeStyle = clickColor[i];
+           colorContext.lineWidth = clickSize[i];
+           colorContext.stroke();
+        } else if (clickMode[i] === "fill") {
+          floodFill(clickX[i], clickY[i], clickColor[i]);
+        }   
+        
       }
       colorContext.globalAlpha = 1;
       
     }
     
+    function floodFill(x, y, color) {
+      var stack = [[x, y]];
+
+      var rgb = hexToRgb(color);
+      var r = rgb.r;  
+      var g = rgb.g;
+      var b = rgb.b;
+  
+      while (stack.length) {
+        var current = stack.pop();
+        var curX = current[0];
+        var curY = current[1];
+        var pixelPos = (curY * 700 + curX) * 4;
+        console.log(notLine(pixelPos));
+        /*
+        if (curX >= 0 && curX <= 700 && 
+            curY >= 0 && curY <= 700 && 
+            notLine(pixelPos)) {
+          //color the pixel
+          console.log(pixelPos);
+          colorLayerData.data[pixelPos] = r;
+          console.log("fef");
+          colorLayerData.data[pixelPos + 1] = g;
+          colorLayerData.data[pixelPos + 2] = b;
+          colorContext.putImageData(colorLayerData, curX, curY);
+          console.log(r);
+          stack.push([curX + 1 , curY]);
+          stack.push([curX, curY + 1]);
+          stack.push([curX - 1, curY]);
+          stack.push([curX, curY - 1]);
+        } else {
+          console.log("end");
+        }*/
+      }
+
+    }
     
+    function notLine(pos) {
+      var r = lineLayerData.data[pos];
+      var g = lineLayerData.data[pos + 1];
+      var b = lineLayerData.data[pos + 2];
+
+      if (r + g + b === 0) { // transparent
+        console.log('true');
+        return true;
+      } else {
+        console.log('false');
+        return false;
+      }
+    }
+
+    function hexToRgb(hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+
 
     /*var colorThreshold = 15;
     var blurRadius = 5;

@@ -16,6 +16,7 @@ Template.choosePage.helpers({
 Template.choosePage.events({
 	'click .pure-u-1-4': function() {
 		var imageURL = this.url("cropped");
+		// for deleting images: Images.remove(this._id);
 		var params = {};
 		var queryParams = {image: imageURL}
 		FlowRouter.go("/color", params, queryParams);
