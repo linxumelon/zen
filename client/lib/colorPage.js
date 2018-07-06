@@ -4,12 +4,13 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 $(function() {
     var colorLayer    = document.getElementById('colorLayer');
     var lineLayer    = document.getElementById('lineLayer');
+    var backUpLayer = document.createElement('canvas');
 
     var matchOutlineColor = function(r, g, b, a){
-        return (r + g + b < 100 && a >= 100);
+        return (r + g + b < 150 && a >= 100);
     };
     //turns non-black pixels to transparent
-    var rmWhiteP = function(canvas, ctx) {
+    var rmWhiteP = function(canvas, ctx, backUpCtx) {
         var pixels = ctx.getImageData(0, 0, 700, 700);
         var pixelsD = pixels.data;
         for (var i = 0; i < pixelsD.length; i+= 4 ){
@@ -24,6 +25,7 @@ $(function() {
            }
         }
         ctx.putImageData(pixels, 0, 0);
+        backUpCtx.putImageData(pixels, 0, 0);
         console.log("ok");
         return ctx;
     }
@@ -34,11 +36,15 @@ $(function() {
     lineLayer.setAttribute('width', 700);// px
     lineLayer.setAttribute('height', 700);// px
     lineLayer.setAttribute('id', 'lineLayer');
+    backUpLayer.setAttribute('width', 700);// px
+    backUpLayer.setAttribute('height', 700);// px
 
     var colorContext = colorLayer.getContext("2d");
     var lineContext = lineLayer.getContext("2d");
+    var backUpContext = backUpLayer.getContext("2d");
     var colorLayerData;
     var lineLayerData;
+    var backUpContext;
 
     //imports template png to line layer
     var templateImage = new Image();
@@ -48,7 +54,7 @@ $(function() {
       console.log("loaded");
         colorContext.drawImage(templateImage, 0, 0);
         lineContext.drawImage(templateImage, 0, 0);
-        lineContext = rmWhiteP(lineLayer, lineContext);
+        lineContext = rmWhiteP(lineLayer, lineContext, backUpContext);
         try {
             // lineLayerData = lineContext.getImageData(0, 0, 700, 700);
             colorLayerData = colorContext.getImageData(0, 0, 700, 700);
@@ -67,6 +73,7 @@ $(function() {
     var opacity = 100; //percent
     var color = "#df4b26";
     var paint = false;
+    var layer = colorContext;
 
 
     var clickX = new Array();
@@ -76,6 +83,7 @@ $(function() {
     var clickColor = new Array();
     var clickSize = new Array();
     var clickOpacity = new Array();
+    var clickCtx = new Array();
 
     var redoX = new Array();
     var redoY = new Array();
@@ -84,21 +92,26 @@ $(function() {
     var redoColor = new Array();
     var redoSize = new Array();
     var redoOpacity = new Array();
-
+    var redoCtx = new Array();
+    
+    
     $('#lineLayer').mousedown(function(e){
       var mouseX = e.pageX - $('#lineLayer').offset().left;
       var mouseY = e.pageY - $('#lineLayer').offset().top;
+      function dropperHelper(ctx) {
+        var p = ctx.getImageData(mouseX, mouseY, 1, 1).data;
+        var hex = ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
+        $('#colorPicker').colpickSetColor(hex,true); //using colpick      
+      }
          
       if (mode === "brush") {          
         paint = true;
-        addClick(e.pageX - $('#lineLayer').offset().left, e.pageY - $('#lineLayer').offset().top);
+        addClick(e.pageX - $('#lineLayer').offset().left, e.pageY - $('#lineLayer').offset().top, layer);
         redraw();
       } else if (mode === "dropper") {
-        var p = colorContext.getImageData(mouseX, mouseY, 1, 1).data;
-        var hex = ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
-        $('#colorPicker').colpickSetColor(hex,true); //using colpick
+        dropperHelper(layer);
       } else if (mode === "fill") {
-        addClick(mouseX, mouseY, false);
+        addClick(mouseX, mouseY, false, layer);
         redraw();
       }
     });
@@ -109,7 +122,7 @@ $(function() {
         var coordinateX = e.pageX - $('#lineLayer').offset().left;
         var coordinateY = e.pageY - $('#lineLayer').offset().top; 
 
-        addClick(coordinateX, coordinateY, true);
+        addClick(coordinateX, coordinateY, true, layer);
         redraw();
         }
     });
@@ -122,7 +135,7 @@ $(function() {
     
     
 
-    function addClick(x, y, dragging) {
+    function addClick(x, y, dragging, layer) {
       clickX.push(x);
       clickY.push(y);
       clickDrag.push(dragging);
@@ -130,6 +143,7 @@ $(function() {
       clickMode.push(mode);
       clickSize.push(lineWidth);
       clickOpacity.push(opacity);
+      clickCtx.push(layer);
       redoX = [];
       redoY = [];
       redoMode = [];
@@ -137,34 +151,41 @@ $(function() {
       redoColor = [];
       redoSize = [];
       redoOpacity = [];
+      redoCtx = [];
     }
 
     function redraw(){
       colorContext.clearRect(0, 0, 700, 700);
       colorContext.drawImage(templateImage, 0, 0);
       colorContext.lineJoin = "round";
-                
+      lineContext.clearReact(0, 0, 700, 700);
+      lineContext.drawImage(backUpLayer, 0, 0);
+      lineContext.lineJoin = "round";
+      
+      function brushHelper(layer) {
+        layer.beginPath();
+        layer.globalAlpha = clickOpacity[i] / 100;
+        if(clickDrag[i] && i){
+          layer.moveTo(clickX[i-1], clickY[i-1]);
+         }else{
+           layer.moveTo(clickX[i]-1, clickY[i]);
+         }
+         layer.lineTo(clickX[i], clickY[i]);
+         layer.closePath();
+         layer.strokeStyle = clickColor[i];
+         layer.lineWidth = clickSize[i];
+         layer.stroke();
+      }
       for(var i=0; i < clickX.length; i++) {  
         if (clickMode[i] === "brush") {
-          colorContext.beginPath();
-          colorContext.globalAlpha = clickOpacity[i] / 100;
-          if(clickDrag[i] && i){
-            colorContext.moveTo(clickX[i-1], clickY[i-1]);
-           }else{
-             colorContext.moveTo(clickX[i]-1, clickY[i]);
-           }
-           colorContext.lineTo(clickX[i], clickY[i]);
-           colorContext.closePath();
-           colorContext.strokeStyle = clickColor[i];
-           colorContext.lineWidth = clickSize[i];
-           colorContext.stroke();
+          brushHelper(layer);
         } else if (clickMode[i] === "fill") {
           floodFill(clickX[i], clickY[i], clickColor[i]);
         }   
         
       }
       colorContext.globalAlpha = 1;
-      
+      lineContext.globalAlpha = 1;
     }
     
     // function floodFill(x, y, color) {
@@ -277,11 +298,11 @@ $(function() {
     });
 
     $('button-line-layer').click(function() {
-        
+        layer = "line";
     });
 
     $('button-color-layer').click(function() {
-        
+        layer = "color";
     });
 
     $('#button-eyedrop').click(function() {    
@@ -306,6 +327,8 @@ $(function() {
         redoColor.push(clickColor.pop());
         redoSize.push(clickSize.pop());
         redoOpacity.push(clickOpacity.pop());
+        redoCtx.push(clickCtx.pop());
+        
         if (drag) {
           undo();
         } else {
@@ -328,6 +351,7 @@ $(function() {
         clickColor.push(redoColor.pop());
         clickSize.push(redoSize.pop());
         clickOpacity.push(redoOpacity.pop());
+        clickCtx.push(redoCtx.pop());
         if (redoDrag.length > 0 && redoDrag[redoDrag.length - 1]) {
           redo();
         } else {
