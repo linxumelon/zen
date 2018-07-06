@@ -21,7 +21,7 @@ $(function() {
            
            if (!matchOutlineColor(r, g, b, a) ){
                pixelsD[i+3] = 0.0;
-               console.log(pixelsD[i+3]);
+               console.log(pixelsD.length);
            }
         }
         ctx.putImageData(pixels, 0, 0);
@@ -38,6 +38,7 @@ $(function() {
     lineLayer.setAttribute('id', 'lineLayer');
     backUpLayer.setAttribute('width', 700);// px
     backUpLayer.setAttribute('height', 700);// px
+    backUpLayer.setAttribute('id', 'backUpLayer');
 
     var colorContext = colorLayer.getContext("2d");
     var lineContext = lineLayer.getContext("2d");
@@ -73,7 +74,7 @@ $(function() {
     var opacity = 100; //percent
     var color = "#df4b26";
     var paint = false;
-    var layer = colorContext;
+    var layer = "color";
 
 
     var clickX = new Array();
@@ -106,12 +107,12 @@ $(function() {
          
       if (mode === "brush") {          
         paint = true;
-        addClick(e.pageX - $('#lineLayer').offset().left, e.pageY - $('#lineLayer').offset().top, layer);
+        addClick(e.pageX - $('#lineLayer').offset().left, e.pageY - $('#lineLayer').offset().top);
         redraw();
       } else if (mode === "dropper") {
         dropperHelper(layer);
       } else if (mode === "fill") {
-        addClick(mouseX, mouseY, false, layer);
+        addClick(mouseX, mouseY, false);
         redraw();
       }
     });
@@ -122,7 +123,7 @@ $(function() {
         var coordinateX = e.pageX - $('#lineLayer').offset().left;
         var coordinateY = e.pageY - $('#lineLayer').offset().top; 
 
-        addClick(coordinateX, coordinateY, true, layer);
+        addClick(coordinateX, coordinateY, true);
         redraw();
         }
     });
@@ -135,7 +136,7 @@ $(function() {
     
     
 
-    function addClick(x, y, dragging, layer) {
+    function addClick(x, y, dragging) {
       clickX.push(x);
       clickY.push(y);
       clickDrag.push(dragging);
@@ -158,27 +159,43 @@ $(function() {
       colorContext.clearRect(0, 0, 700, 700);
       colorContext.drawImage(templateImage, 0, 0);
       colorContext.lineJoin = "round";
-      lineContext.clearReact(0, 0, 700, 700);
+      lineContext.clearRect(0, 0, 700, 700);
       lineContext.drawImage(backUpLayer, 0, 0);
       lineContext.lineJoin = "round";
       
-      function brushHelper(layer) {
-        layer.beginPath();
-        layer.globalAlpha = clickOpacity[i] / 100;
-        if(clickDrag[i] && i){
-          layer.moveTo(clickX[i-1], clickY[i-1]);
-         }else{
-           layer.moveTo(clickX[i]-1, clickY[i]);
-         }
-         layer.lineTo(clickX[i], clickY[i]);
-         layer.closePath();
-         layer.strokeStyle = clickColor[i];
-         layer.lineWidth = clickSize[i];
-         layer.stroke();
-      }
       for(var i=0; i < clickX.length; i++) {  
         if (clickMode[i] === "brush") {
-          brushHelper(layer);
+          if (clickCtx[i] === "color") {
+            console.log("color");
+            colorContext.beginPath();
+            colorContext.globalAlpha = clickOpacity[i] / 100;
+            if(clickDrag[i] && i){
+              colorContext.moveTo(clickX[i-1], clickY[i-1]);
+            }else{
+              colorContext.moveTo(clickX[i]-1, clickY[i]);
+            }
+            colorContext.lineTo(clickX[i], clickY[i]);
+            colorContext.closePath();
+            colorContext.strokeStyle = clickColor[i];
+            colorContext.lineWidth = clickSize[i];
+            colorContext.stroke();
+
+          } else if (clickCtx[i] === "line") {
+            console.log("line");
+            lineContext.beginPath();
+            lineContext.globalAlpha = clickOpacity[i] / 100;
+            if(clickDrag[i] && i){
+              lineContext.moveTo(clickX[i-1], clickY[i-1]);
+            }else{
+              lineContext.moveTo(clickX[i]-1, clickY[i]);
+            }
+            lineContext.lineTo(clickX[i], clickY[i]);
+            lineContext.closePath();
+            lineContext.strokeStyle = clickColor[i];
+            lineContext.lineWidth = clickSize[i];
+            lineContext.stroke();
+          }
+
         } else if (clickMode[i] === "fill") {
           floodFill(clickX[i], clickY[i], clickColor[i]);
         }   
@@ -297,11 +314,12 @@ $(function() {
         mode = "fill";
     });
 
-    $('button-line-layer').click(function() {
+    $('#button-line-layer').click(function() {
+        console.log("linelayer");
         layer = "line";
     });
 
-    $('button-color-layer').click(function() {
+    $('#button-color-layer').click(function() {
         layer = "color";
     });
 
