@@ -21,7 +21,7 @@ $(function() {
            
            if (!matchOutlineColor(r, g, b, a) ){
                pixelsD[i+3] = 0.0;
-               console.log(pixelsD.length);
+               //console.log(pixelsD.length);
            }
         }
         ctx.putImageData(pixels, 0, 0);
@@ -57,7 +57,7 @@ $(function() {
         lineContext.drawImage(templateImage, 0, 0);
         lineContext = rmWhiteP(lineLayer, lineContext, backUpContext);
         try {
-            // lineLayerData = lineContext.getImageData(0, 0, 700, 700);
+            lineLayerData = lineContext.getImageData(0, 0, 700, 700);
             colorLayerData = colorContext.getImageData(0, 0, 700, 700);
         } catch (ex) {
 
@@ -100,7 +100,12 @@ $(function() {
       var mouseX = e.pageX - $('#lineLayer').offset().left;
       var mouseY = e.pageY - $('#lineLayer').offset().top;
       function dropperHelper(ctx) {
-        var p = ctx.getImageData(mouseX, mouseY, 1, 1).data;
+        var p;
+        if (ctx === "color") {
+          p = colorContext.getImageData(mouseX, mouseY, 1, 1).data;
+        } else if (ctx === "line") {
+          p = lineContext.getImageData(mouseX, mouseY, 1, 1).data;
+        }
         var hex = ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
         $('#colorPicker').colpickSetColor(hex,true); //using colpick      
       }
@@ -197,7 +202,8 @@ $(function() {
           }
 
         } else if (clickMode[i] === "fill") {
-          floodFill(clickX[i], clickY[i], clickColor[i]);
+          colorContext.fillStyle = clickColor[i];
+          colorContext.fillFlood(clickX[i], clickY[i], 100);
         }   
         
       }
@@ -205,42 +211,44 @@ $(function() {
       lineContext.globalAlpha = 1;
     }
     
-    // function floodFill(x, y, color) {
-    //   var stack = [[x, y]];
+    /*function floodFill(x, y, color) {
+      var stack = [[x, y]];
 
-    //   var rgb = hexToRgb(color);
-    //   var r = rgb.r;  
-    //   var g = rgb.g;
-    //   var b = rgb.b;
+      var rgb = hexToRgb(color);
+      var r = rgb.r;  
+      var g = rgb.g;
+      var b = rgb.b;
   
-    //   while (stack.length) {
-    //     var current = stack.pop();
-    //     var curX = current[0];
-    //     var curY = current[1];
-    //     var pixelPos = (curY * 700 + curX) * 4;
-    //     console.log(notLine(pixelPos));
-        /*
+      while (stack.length) {
+        console.log("stack" + stack.length);
+        var current = stack.pop();
+        var curX = current[0];
+        var curY = current[1];
+        var pixelPos = (curY * 700 + curX) * 4;
+        console.log("notline" + notLine(pixelPos));
+        console.log("notTarget" + notTargetColor(pixelPos, r, g, b));
+        
         if (curX >= 0 && curX <= 700 && 
             curY >= 0 && curY <= 700 && 
-            notLine(pixelPos)) {
+            notLine(pixelPos) && 
+            notTargetColor(pixelPos, r, g, b)) {
           //color the pixel
-          console.log(pixelPos);
           colorLayerData.data[pixelPos] = r;
           console.log("fef");
           colorLayerData.data[pixelPos + 1] = g;
           colorLayerData.data[pixelPos + 2] = b;
           colorContext.putImageData(colorLayerData, curX, curY);
-          console.log(r);
+          console.log("r");
           stack.push([curX + 1 , curY]);
           stack.push([curX, curY + 1]);
           stack.push([curX - 1, curY]);
           stack.push([curX, curY - 1]);
         } else {
           console.log("end");
-        }*/
-    //   }
+        }
+       }
 
-    // }
+     }
     
     function notLine(pos) {
       var r = lineLayerData.data[pos];
@@ -255,6 +263,19 @@ $(function() {
         return false;
       }
     }
+
+    function notTargetColor(pos, r, g, b) {
+      if (r === lineLayerData.data[pos]) {
+        return false;
+      } else if (g === lineLayerData.data[pos + 1]) {
+        return false;
+      } else if (b === lineLayerData.data[pos + 2]) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+*/
 
     function hexToRgb(hex) {
         var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
