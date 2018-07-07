@@ -203,7 +203,7 @@ $(function() {
 
         } else if (clickMode[i] === "fill") {
           colorContext.fillStyle = clickColor[i];
-          colorContext.fillFlood(clickX[i], clickY[i], 100);
+          colorContext.fillFlood(clickX[i], clickY[i], 200);
         }   
         
       }
