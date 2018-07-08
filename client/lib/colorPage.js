@@ -1,6 +1,8 @@
 import {$,jQuery} from 'meteor/jquery';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
+var debug = true;
+
 $(function() {
     var colorLayer    = document.getElementById('colorLayer');
     var lineLayer    = document.getElementById('lineLayer');
@@ -10,24 +12,29 @@ $(function() {
         return (r + g + b < 150 && a >= 100);
     };
     //turns non-black pixels to transparent
-    var rmWhiteP = function(canvas, ctx, backUpCtx) {
+    var rmWhiteP = function(canvas, ctx, lineCtx) {
         var pixels = ctx.getImageData(0, 0, 700, 700);
         var pixelsD = pixels.data;
-        for (var i = 0; i < pixelsD.length; i+= 4 ){
-           var r = pixelsD[i];
-           var g = pixelsD[i+1];
-           var b = pixelsD[i+2];
-           var a = pixelsD[i+3];
+        var imageData = lineCtx.createImageData(700, 700);
+        for (var i = 0; i < pixelsD.length; i+= 4){
+          var r = pixelsD[i];
+          var g = pixelsD[i+1];
+          var b = pixelsD[i+2];
+          var a = pixelsD[i+3];
            
-           if (!matchOutlineColor(r, g, b, a) ){
-               pixelsD[i+3] = 0.0;
-               //console.log(pixelsD.length);
+          if (matchOutlineColor(r, g, b, a) ){
+              var y = Math.floor(i/2800);
+              var x = (i/4) - y*700;
+              lineCtx.rect(x, y, 1, 1);
+              a = 0.0;
            }
         }
-        ctx.putImageData(pixels, 0, 0);
-        backUpCtx.putImageData(pixels, 0, 0);
+        ctx.putImageData(imageData, 0, 0);
+        lineCtx.clip();
+        lineCtx.fillStyle="black";
+        lineCtx.fillRect(0,0,700,700);
         console.log("ok");
-        return ctx;
+        return lineCtx;
     }
 
     colorLayer.setAttribute('width', 700);// px
@@ -54,8 +61,12 @@ $(function() {
     templateImage.onload = function() {
       console.log("loaded");
         colorContext.drawImage(templateImage, 0, 0);
-        lineContext.drawImage(templateImage, 0, 0);
-        lineContext = rmWhiteP(lineLayer, lineContext, backUpContext);
+        lineContext = rmWhiteP(colorLayer, colorContext, lineContext);
+        backUpContext.drawImage(lineLayer, 0, 0);
+        if (debug) {
+          colorContext.clearRect(0, 0, 700, 700);
+        }
+        
         try {
             lineLayerData = lineContext.getImageData(0, 0, 700, 700);
             colorLayerData = colorContext.getImageData(0, 0, 700, 700);
