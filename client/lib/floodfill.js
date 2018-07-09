@@ -3,6 +3,10 @@ var floodfill = (function() {
 	//Copyright(c) Max Irwin - 2011, 2015, 2016
 	//MIT License
 
+	function matchOutlineColor(r, g, b, a){
+        return (r + g + b < 500 && a >= 10);
+	};
+	
 	function floodfill(data,x,y,fillcolor,tolerance,width,height) {
 
 		var length = data.length;
@@ -33,29 +37,41 @@ var floodfill = (function() {
 	};
 
 	function pixelCompare(i,targetcolor,fillcolor,data,length,tolerance) {
-		if (i<0||i>=length) return false; //out of bounds
-		if (data[i+3]===0 && fillcolor.a>0) return true;  //surface is invisible and fill is visible
+		if (i<0||i>=length) {
+			return false; //out of bounds
+		}
+		if (matchOutlineColor(targetcolor[0], targetcolor[1], 
+			    targetcolor[2], targetcolor[3])) {
+			if(debug) {
+				console.log("is black");
+			}
+			return false;
+		}
 
-		if (
-			Math.abs(targetcolor[3] - fillcolor.a)<=tolerance &&
+		if (data[i+3]===0 && fillcolor.a>0) {
+			return true;  //surface is invisible and fill is visible
+		}
+        
+		if (Math.abs(targetcolor[3] - fillcolor.a)<=tolerance &&
 			Math.abs(targetcolor[0] - fillcolor.r)<=tolerance &&
 			Math.abs(targetcolor[1] - fillcolor.g)<=tolerance &&
-			Math.abs(targetcolor[2] - fillcolor.b)<=tolerance
-		) return false; //target is same as fill
+			Math.abs(targetcolor[2] - fillcolor.b)<=tolerance ) {
+			    return false; //target is same as fill
+		}
 
-		if (
-			(targetcolor[3] === data[i+3]) &&
+		if ((targetcolor[3] === data[i+3]) &&
 			(targetcolor[0] === data[i]  ) &&
 			(targetcolor[1] === data[i+1]) &&
-			(targetcolor[2] === data[i+2])
-		) return true; //target matches surface
+			(targetcolor[2] === data[i+2])) {
+				return true; //target matches surface
+		}
 
-		if (
-			Math.abs(targetcolor[3] - data[i+3])<=(255-tolerance) &&
+		if (Math.abs(targetcolor[3] - data[i+3])<=(255-tolerance) &&
 			Math.abs(targetcolor[0] - data[i]  )<=tolerance &&
 			Math.abs(targetcolor[1] - data[i+1])<=tolerance &&
-			Math.abs(targetcolor[2] - data[i+2])<=tolerance
-		) return true; //target to surface within tolerance
+			Math.abs(targetcolor[2] - data[i+2])<=tolerance) {
+		    return true; //target to surface within tolerance
+		}
 
 		return false; //no match
 	};

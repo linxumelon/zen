@@ -26,7 +26,7 @@ $(function() {
               var y = Math.floor(i/2800);
               var x = (i/4) - y*700;
               lineCtx.rect(x, y, 1, 1);
-              a = 0.0;
+              // a = 0.0;
            }
         }
         ctx.putImageData(imageData, 0, 0);
@@ -456,7 +456,7 @@ $(function() {
             height: imageInfo.height,
             bytes: 4
           };
-          // mask = MagicWand.floodFill(image, downPoint.x, downPoint.y, currentThreshold);
+          mask = MagicWand.floodFill(image, downPoint.x, downPoint.y, currentThreshold);
           mask = MagicWand.gaussBlurOnlyBorder(mask, blurRadius);
           masks.push(mask);
           cacheInds.push(MagicWand.getBorderIndices(mask));
