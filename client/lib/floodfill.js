@@ -2,6 +2,7 @@ var floodfill = (function() {
 
 	//Copyright(c) Max Irwin - 2011, 2015, 2016
 	//MIT License
+	var debug = true;
 
 	function matchOutlineColor(r, g, b, a){
         return (r + g + b < 500 && a >= 10);

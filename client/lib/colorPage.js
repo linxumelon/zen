@@ -9,7 +9,7 @@ $(function() {
     var backUpLayer = document.createElement('canvas');
 
     var matchOutlineColor = function(r, g, b, a){
-        return (r + g + b < 150 && a >= 100);
+        return (r + g + b < 600 && a >= 40);
     };
     //turns non-black pixels to transparent
     var rmWhiteP = function(canvas, ctx, lineCtx) {
@@ -106,6 +106,61 @@ $(function() {
     var redoOpacity = new Array();
     var redoCtx = new Array();
     
+    function redraw(){
+      colorContext.clearRect(0, 0, 700, 700);
+      colorContext.drawImage(templateImage, 0, 0);
+      colorContext.lineJoin = "round";
+      lineContext.clearRect(0, 0, 700, 700);
+      lineContext.drawImage(backUpLayer, 0, 0);
+      lineContext.lineJoin = "round";
+
+      if(clickX.length > 100000) {
+
+      }
+      
+      for(var i=0; i < clickX.length; i++) {  
+        if (clickMode[i] === "brush") {
+          if (clickCtx[i] === "color") {
+            console.log("color");
+            colorContext.beginPath();
+            colorContext.globalAlpha = clickOpacity[i] / 100;
+            if(clickDrag[i] && i){
+              colorContext.moveTo(clickX[i-1], clickY[i-1]);
+            }else{
+              colorContext.moveTo(clickX[i]-1, clickY[i]);
+            }
+            colorContext.lineTo(clickX[i], clickY[i]);
+            colorContext.closePath();
+            colorContext.strokeStyle = clickColor[i];
+            colorContext.lineWidth = clickSize[i];
+            colorContext.stroke();
+
+          } else if (clickCtx[i] === "line") {
+            console.log("line");
+            lineContext.beginPath();
+            lineContext.globalAlpha = clickOpacity[i] / 100;
+            if(clickDrag[i] && i){
+              lineContext.moveTo(clickX[i-1], clickY[i-1]);
+            }else{
+              lineContext.moveTo(clickX[i]-1, clickY[i]);
+            }
+            lineContext.lineTo(clickX[i], clickY[i]);
+            lineContext.closePath();
+            lineContext.strokeStyle = clickColor[i];
+            lineContext.lineWidth = clickSize[i];
+            lineContext.stroke();
+          }
+
+        } else if (clickMode[i] === "fill") {
+          colorContext.fillStyle = clickColor[i];
+          colorContext.fillFlood(clickX[i], clickY[i], 200);
+        }   
+        
+      }
+      colorContext.globalAlpha = 1;
+      lineContext.globalAlpha = 1;
+    }
+
     
     $('#lineLayer').mousedown(function(e){
       var mouseX = e.pageX - $('#lineLayer').offset().left;
@@ -169,57 +224,6 @@ $(function() {
       redoSize = [];
       redoOpacity = [];
       redoCtx = [];
-    }
-
-    function redraw(){
-      colorContext.clearRect(0, 0, 700, 700);
-      colorContext.drawImage(templateImage, 0, 0);
-      colorContext.lineJoin = "round";
-      lineContext.clearRect(0, 0, 700, 700);
-      lineContext.drawImage(backUpLayer, 0, 0);
-      lineContext.lineJoin = "round";
-      
-      for(var i=0; i < clickX.length; i++) {  
-        if (clickMode[i] === "brush") {
-          if (clickCtx[i] === "color") {
-            console.log("color");
-            colorContext.beginPath();
-            colorContext.globalAlpha = clickOpacity[i] / 100;
-            if(clickDrag[i] && i){
-              colorContext.moveTo(clickX[i-1], clickY[i-1]);
-            }else{
-              colorContext.moveTo(clickX[i]-1, clickY[i]);
-            }
-            colorContext.lineTo(clickX[i], clickY[i]);
-            colorContext.closePath();
-            colorContext.strokeStyle = clickColor[i];
-            colorContext.lineWidth = clickSize[i];
-            colorContext.stroke();
-
-          } else if (clickCtx[i] === "line") {
-            console.log("line");
-            lineContext.beginPath();
-            lineContext.globalAlpha = clickOpacity[i] / 100;
-            if(clickDrag[i] && i){
-              lineContext.moveTo(clickX[i-1], clickY[i-1]);
-            }else{
-              lineContext.moveTo(clickX[i]-1, clickY[i]);
-            }
-            lineContext.lineTo(clickX[i], clickY[i]);
-            lineContext.closePath();
-            lineContext.strokeStyle = clickColor[i];
-            lineContext.lineWidth = clickSize[i];
-            lineContext.stroke();
-          }
-
-        } else if (clickMode[i] === "fill") {
-          colorContext.fillStyle = clickColor[i];
-          colorContext.fillFlood(clickX[i], clickY[i], 200);
-        }   
-        
-      }
-      colorContext.globalAlpha = 1;
-      lineContext.globalAlpha = 1;
     }
     
     /*function floodFill(x, y, color) {
