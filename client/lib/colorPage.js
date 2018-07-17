@@ -1,7 +1,7 @@
 import {$,jQuery} from 'meteor/jquery';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
-var debug = true;
+var debug = false;
 
 $(function() {
     var colorLayer    = document.getElementById('colorLayer');
@@ -12,9 +12,7 @@ $(function() {
         return (r + g + b < 600 && a >= 40);
     };
     //turns non-black pixels to transparent
-    var rmWhiteP = function(canvas, ctx, lineCtx) {
-        var pixels = ctx.getImageData(0, 0, 700, 700);
-        var pixelsD = pixels.data;
+    var rmWhiteP = function(canvas, ctx, pixelsD, lineCtx) {
         var imageData = lineCtx.createImageData(700, 700);
         for (var i = 0; i < pixelsD.length; i+= 4){
           var r = pixelsD[i];
@@ -53,6 +51,8 @@ $(function() {
     var colorLayerData;
     var lineLayerData;
     var backUpContext;
+    var pixels;
+    var pixelsD;
 
     //imports template png to line layer
     var templateImage = new Image();
@@ -61,7 +61,9 @@ $(function() {
     templateImage.onload = function() {
       console.log("loaded");
         colorContext.drawImage(templateImage, 0, 0);
-        lineContext = rmWhiteP(colorLayer, colorContext, lineContext);
+        pixels = colorContext.getImageData(0, 0, 700, 700);
+        pixelsD = pixels.data;
+        lineContext = rmWhiteP(colorLayer, colorContext, pixelsD, lineContext);
         backUpContext.drawImage(lineLayer, 0, 0);
         if (debug) {
           colorContext.clearRect(0, 0, 700, 700);
@@ -120,6 +122,9 @@ $(function() {
       
       for(var i=0; i < clickX.length; i++) {  
         if (clickMode[i] === "brush") {
+          if(debug){
+            console.log("x = " + clickX[i] + ", y = " + clickY[i]);
+          }
           if (clickCtx[i] === "color") {
             console.log("color");
             colorContext.beginPath();
@@ -153,7 +158,18 @@ $(function() {
 
         } else if (clickMode[i] === "fill") {
           colorContext.fillStyle = clickColor[i];
-          colorContext.fillFlood(clickX[i], clickY[i], 200);
+          if(debug){
+            console.log("x = " + clickX[i] + ", y = " + clickY[i]);
+          }
+          var opacity = clickOpacity[i];
+          // var rgb = hexToRgb(colorContext.fillStyle);
+          // var fillColor = [rgb[0], rgb[1], rgb[2], opacity];
+          if(debug) {
+            console.log("fillcolor chosen is " + clickColor[i]);
+          }
+          colorContext.fillStyle = clickColor[i];
+          colorContext.opacity = opacity;
+          colorContext.fillFlood(clickX[i], clickY[i], 20);
         }   
         
       }
@@ -161,7 +177,7 @@ $(function() {
       lineContext.globalAlpha = 1;
     }
 
-    
+
     $('#lineLayer').mousedown(function(e){
       var mouseX = e.pageX - $('#lineLayer').offset().left;
       var mouseY = e.pageY - $('#lineLayer').offset().top;
@@ -178,12 +194,12 @@ $(function() {
          
       if (mode === "brush") {          
         paint = true;
-        addClick(e.pageX - $('#lineLayer').offset().left, e.pageY - $('#lineLayer').offset().top);
+        addClick(mouseX, mouseY, false);
         redraw();
       } else if (mode === "dropper") {
         dropperHelper(layer);
       } else if (mode === "fill") {
-        addClick(mouseX, mouseY, false);
+        addClick(mouseX, mouseY, true);
         redraw();
       }
     });
@@ -225,110 +241,8 @@ $(function() {
       redoOpacity = [];
       redoCtx = [];
     }
+
     
-    /*function floodFill(x, y, color) {
-      var stack = [[x, y]];
-
-      var rgb = hexToRgb(color);
-      var r = rgb.r;  
-      var g = rgb.g;
-      var b = rgb.b;
-  
-      while (stack.length) {
-        console.log("stack" + stack.length);
-        var current = stack.pop();
-        var curX = current[0];
-        var curY = current[1];
-        var pixelPos = (curY * 700 + curX) * 4;
-        console.log("notline" + notLine(pixelPos));
-        console.log("notTarget" + notTargetColor(pixelPos, r, g, b));
-        
-        if (curX >= 0 && curX <= 700 && 
-            curY >= 0 && curY <= 700 && 
-            notLine(pixelPos) && 
-            notTargetColor(pixelPos, r, g, b)) {
-          //color the pixel
-          colorLayerData.data[pixelPos] = r;
-          console.log("fef");
-          colorLayerData.data[pixelPos + 1] = g;
-          colorLayerData.data[pixelPos + 2] = b;
-          colorContext.putImageData(colorLayerData, curX, curY);
-          console.log("r");
-          stack.push([curX + 1 , curY]);
-          stack.push([curX, curY + 1]);
-          stack.push([curX - 1, curY]);
-          stack.push([curX, curY - 1]);
-        } else {
-          console.log("end");
-        }
-       }
-
-     }
-    
-    function notLine(pos) {
-      var r = lineLayerData.data[pos];
-      var g = lineLayerData.data[pos + 1];
-      var b = lineLayerData.data[pos + 2];
-
-      if (r + g + b === 0) { // transparent
-        console.log('true');
-        return true;
-      } else {
-        console.log('false');
-        return false;
-      }
-    }
-
-    function notTargetColor(pos, r, g, b) {
-      if (r === lineLayerData.data[pos]) {
-        return false;
-      } else if (g === lineLayerData.data[pos + 1]) {
-        return false;
-      } else if (b === lineLayerData.data[pos + 2]) {
-        return false;
-      } else {
-        return true;
-      }
-    }
-*/
-
-    function hexToRgb(hex) {
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-        } : null;
-    }
-
-
-    /*var colorThreshold = 15;
-    var blurRadius = 5;
-    var simplifyTolerant = 0;
-    var simplifyCount = 30;
-    var hatchLength = 4;
-    var hatchOffset = 0;
-    var imageInfo = {
-        width: 700,
-        height: 700,
-        context: canvas.getContext("2d")
-      };       
-    var cacheInd = null;
-    var cacheInds = [];    
-    var downPoint = null;
-    var mask = null;
-    var masks = [];
-    var allowDraw = false;
-    var currentThreshold = colorThreshold;
-    canvas.width = imageInfo.width;
-    canvas.height = imageInfo.height;
-    var tempCanvas = document.createElement('canvas');
-    var tempCtx = tempCanvas.getContext("2d");
-    tempCanvas.width = imageInfo.width;
-    tempCanvas.height = imageInfo.height;
-    tempCtx.drawImage(src, 0, 0);
-    imageInfo.data = tempCtx.getImageData(0, 0, imageInfo.width, imageInfo.height).data;
-*/
     $('#colorPicker').colpick({
         color: 'df4b26',
         flat: true,
@@ -344,10 +258,16 @@ $(function() {
 
     $('#button-brush').click(function() {
         mode = "brush";
+        if(debug){
+          console.log("Mode brush selected.")
+        }
     });
 
     $('#button-fill').click(function() {
         mode = "fill";
+        if(debug){
+          console.log("Mode fill selected.");
+        }
     });
 
     $('#button-line-layer').click(function() {
@@ -449,24 +369,24 @@ $(function() {
             var x = Math.round((e.clientX || e.pageX) - p.left);
             var y = Math.round((e.clientY || e.pageY) - p.top);    
             downPoint = { x: x, y: y };    
-            magic();
+            // magic();
         });
 
-        var magic = function () {
-        if (imageInfo) {
-          var image = {
-            data: imageInfo.data,
-            width: imageInfo.width,
-            height: imageInfo.height,
-            bytes: 4
-          };
-          mask = MagicWand.floodFill(image, downPoint.x, downPoint.y, currentThreshold);
-          mask = MagicWand.gaussBlurOnlyBorder(mask, blurRadius);
-          masks.push(mask);
-          cacheInds.push(MagicWand.getBorderIndices(mask));
-          drawBorder(true);
-        }
-      };
+      //   var magic = function () {
+      //   if (imageInfo) {
+      //     var image = {
+      //       data: imageInfo.data,
+      //       width: imageInfo.width,
+      //       height: imageInfo.height,
+      //       bytes: 4
+      //     };
+      //     mask = MagicWand.floodfill(downPoint.x, downPoint.y, );
+      //     mask = MagicWand.gaussBlurOnlyBorder(mask, blurRadius);
+      //     masks.push(mask);
+      //     cacheInds.push(MagicWand.getBorderIndices(mask));
+      //     drawBorder(true);
+      //   }
+      // };
 
       
 

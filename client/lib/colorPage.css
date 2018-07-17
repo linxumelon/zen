@@ -8,7 +8,7 @@
 
 #canvas-container { /*canvas itself*/
   float: left;
-  background-color: darkgrey;
+  background-color: "white";
   position: relative;
   height: 700px;
   width: 700px;

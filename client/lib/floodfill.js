@@ -1,8 +1,6 @@
 var floodfill = (function() {
 
-	//Copyright(c) Max Irwin - 2011, 2015, 2016
-	//MIT License
-	var debug = true;
+	var debug = false;
 
 	function matchOutlineColor(r, g, b, a){
         return (r + g + b < 500 && a >= 10);
@@ -15,75 +13,99 @@ var floodfill = (function() {
 		var i = (x+y*width)*4;
 		var e = i, w = i, me, mw, w2 = width*4;
 
-		var targetcolor = [data[i],data[i+1],data[i+2],data[i+3]];
+		var startcolor = [data[i],data[i+1],data[i+2],data[i+3]];
+		if(debug) {
+			console.log("startcolor = " + startcolor);
+		}
 
-		if(!pixelCompare(i,targetcolor,fillcolor,data,length,tolerance)) { return false; }
+		if(!pixelCompare(i,startcolor, fillcolor,data,length,tolerance)) { return false; }
 		Q.push(i);
 		while(Q.length) {
 			i = Q.pop();
-			if(pixelCompareAndSet(i,targetcolor,fillcolor,data,length,tolerance)) {
+			if(pixelCompareAndSet(i,startcolor,fillcolor,data,length,tolerance)) {
 				e = i;
 				w = i;
 				mw = parseInt(i/w2)*w2; //left bound
 				me = mw+w2;             //right bound
-				while(mw<w && mw<(w-=4) && pixelCompareAndSet(w,targetcolor,fillcolor,data,length,tolerance)); //go left until edge hit
-				while(me>e && me>(e+=4) && pixelCompareAndSet(e,targetcolor,fillcolor,data,length,tolerance)); //go right until edge hit
+				while(mw<w && mw<(w-=4) && pixelCompareAndSet(w,startcolor,fillcolor,data,length,tolerance)); //go left until edge hit
+				while(me>e && me>(e+=4) && pixelCompareAndSet(e,startcolor,fillcolor,data,length,tolerance)); //go right until edge hit
 				for(var j=w+4;j<e;j+=4) {
-					if(j-w2>=0     && pixelCompare(j-w2,targetcolor,fillcolor,data,length,tolerance)) Q.push(j-w2); //queue y-1
-					if(j+w2<length && pixelCompare(j+w2,targetcolor,fillcolor,data,length,tolerance)) Q.push(j+w2); //queue y+1
+					if(j-w2>=0     && pixelCompare(j-w2,startcolor,fillcolor,data,length,tolerance)) Q.push(j-w2); //queue y-1
+					if(j+w2<length && pixelCompare(j+w2,startcolor,fillcolor,data,length,tolerance)) Q.push(j+w2); //queue y+1
 				}
 			}
 		}
 		return data;
 	};
 
-	function pixelCompare(i,targetcolor,fillcolor,data,length,tolerance) {
+	function pixelCompare(i,startcolor,fillcolor,data,length,tolerance) {
+		if(debug) {
+			console.log("pixelCompare is called");
+		}
+		if(debug) {
+			console.log("startcolor = " + startcolor);
+			console.log("current pixel color = " + [data[i], data[i+1], data[i+2], data[i+3]]);
+		}
 		if (i<0||i>=length) {
 			return false; //out of bounds
 		}
-		if (matchOutlineColor(targetcolor[0], targetcolor[1], 
-			    targetcolor[2], targetcolor[3])) {
-			if(debug) {
-				console.log("is black");
-			}
-			return false;
-		}
+		// if (matchOutlineColor(targetcolor[0], targetcolor[1], 
+		// 	    targetcolor[2], targetcolor[3])) {
+		// 	if(debug) {
+		// 		console.log("is black");
+		// 	}
+		// 	return false;
+		// }
 
 		if (data[i+3]===0 && fillcolor.a>0) {
 			return true;  //surface is invisible and fill is visible
 		}
         
-		if (Math.abs(targetcolor[3] - fillcolor.a)<=tolerance &&
-			Math.abs(targetcolor[0] - fillcolor.r)<=tolerance &&
-			Math.abs(targetcolor[1] - fillcolor.g)<=tolerance &&
-			Math.abs(targetcolor[2] - fillcolor.b)<=tolerance ) {
-			    return false; //target is same as fill
+		if (Math.abs(startcolor[3] - fillcolor.a)<=tolerance &&
+			Math.abs(startcolor[0] - fillcolor.r)<=tolerance &&
+			Math.abs(startcolor[1] - fillcolor.g)<=tolerance &&
+			Math.abs(startcolor[2] - fillcolor.b)<=tolerance ) {
+			if(debug) {
+				console.log("startcolor === fillcolor");
+			}
+			return false; //target is same as fill
 		}
 
-		if ((targetcolor[3] === data[i+3]) &&
-			(targetcolor[0] === data[i]  ) &&
-			(targetcolor[1] === data[i+1]) &&
-			(targetcolor[2] === data[i+2])) {
-				return true; //target matches surface
+		if ((startcolor[3] === data[i+3]) &&
+			(startcolor[0] === data[i]  ) &&
+			(startcolor[1] === data[i+1]) &&
+			(startcolor[2] === data[i+2])) {
+			if(debug) {
+				console.log("color here === startcolor");
+			}
+			return true; //target matches surface
 		}
 
-		if (Math.abs(targetcolor[3] - data[i+3])<=(255-tolerance) &&
-			Math.abs(targetcolor[0] - data[i]  )<=tolerance &&
-			Math.abs(targetcolor[1] - data[i+1])<=tolerance &&
-			Math.abs(targetcolor[2] - data[i+2])<=tolerance) {
+		if (Math.abs(startcolor[3] - data[i+3])<=(255-tolerance) &&
+			Math.abs(startcolor[0] - data[i]  )<=tolerance &&
+			Math.abs(startcolor[1] - data[i+1])<=tolerance &&
+			Math.abs(startcolor[2] - data[i+2])<=tolerance) {
+				if(debug) {
+					console.log("color here ~== startcolor");
+				}
 		    return true; //target to surface within tolerance
 		}
-
+        
 		return false; //no match
 	};
 
-	function pixelCompareAndSet(i,targetcolor,fillcolor,data,length,tolerance) {
-		if(pixelCompare(i,targetcolor,fillcolor,data,length,tolerance)) {
+	function pixelCompareAndSet(i,startcolor,fillcolor,data,length,tolerance) {
+		if(pixelCompare(i,startcolor,fillcolor,data,length,tolerance)) {
 			//fill the color
 			data[i]   = fillcolor.r;
 			data[i+1] = fillcolor.g;
 			data[i+2] = fillcolor.b;
 			data[i+3] = fillcolor.a;
+			if(debug){
+				console.log("the pixel has been filled by color " + fillcolor);
+				console.log("the color of the pixel now is " + data[i] + ", " + data[i+1] 
+			        + ", " + data[i+2] + ", " + data[i+3]);
+			}
 			return true;
 		}
 		return false;
@@ -109,7 +131,7 @@ var floodfill = (function() {
 		return floodfill(data,xi,yi,color,tolerance,width,height);
 	};
 
-	var getComputedColor = function(c) {
+	var getComputedColor = function(c, opacity) {
 		var temp = document.createElement("div");
 		var color = {r:0,g:0,b:0,a:0};
 		temp.style.color = c;
@@ -126,7 +148,7 @@ var floodfill = (function() {
 			color.r = parseInt(vals[0])||0;
 			color.g = parseInt(vals[1])||0;
 			color.b = parseInt(vals[2])||0;
-			color.a = Math.round((parseFloat(vals[3])||1.0)*255);
+			color.a = Math.round((opacity/100)*255);
 		}
 		return color;
 	};
@@ -135,7 +157,10 @@ var floodfill = (function() {
 		var ctx  = this;
 		
 		//Gets the rgba color from the context fillStyle
-		var color = getComputedColor(this.fillStyle);
+		var color = getComputedColor(this.fillStyle, this.opacity);
+		if(debug) {
+			console.log("fillcolor is " + color.r);
+		}
 
 		//Defaults and type checks for image boundaries
 		left     = (isNaN(left)) ? 0 : left;
@@ -152,6 +177,9 @@ var floodfill = (function() {
 		if(width>0 && height>0) {
 			fillUint8ClampedArray(data,x,y,color,tolerance,width,height);
 			ctx.putImageData(image,left,top);
+			if(debug) {
+				console.log("new imagedata has been put.");
+			}
 		}
 	};
 
