@@ -199,7 +199,7 @@ $(function() {
       } else if (mode === "dropper") {
         dropperHelper(layer);
       } else if (mode === "fill") {
-        addClick(mouseX, mouseY, true);
+        addClick(mouseX, mouseY, false);
         redraw();
       }
     });
