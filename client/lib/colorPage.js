@@ -143,7 +143,7 @@ $(function() {
           } else if (clickCtx[i] === "line") {
             console.log("line");
             lineContext.beginPath();
-            lineContext.globalAlpha = clickOpacity[i] / 100;
+        
             if(clickDrag[i] && i){
               lineContext.moveTo(clickX[i-1], clickY[i-1]);
             }else{
@@ -154,6 +154,7 @@ $(function() {
             lineContext.strokeStyle = clickColor[i];
             lineContext.lineWidth = clickSize[i];
             lineContext.stroke();
+            lineContext.globalAlpha = clickOpacity[i] / 100;
           }
 
         } else if (clickMode[i] === "fill") {

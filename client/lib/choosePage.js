@@ -16,9 +16,9 @@ Template.choosePage.helpers({
 Template.choosePage.events({
 	'click .pure-u-1-4': function() {
 		var imageURL = this.url("cropped");
-		Images.remove(this._id);
+		//Images.remove(this._id);
 		var params = {};
 		var queryParams = {image: imageURL}
-		//FlowRouter.go("/color", params, queryParams);
+		FlowRouter.go("/color", params, queryParams);
 	}
 })
