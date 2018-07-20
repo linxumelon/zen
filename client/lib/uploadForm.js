@@ -19,6 +19,7 @@ Template.uploadForm.events({
 			var file = tempFile.files[0];
 			console.log(typeof(file));
 			fsFile = new FS.File(file);
+			fsFile.owner = Meteor.userId();
 			fsFile.metadata = {
 			    ownerId:"Sample"
 			}

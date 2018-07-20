@@ -34,3 +34,5 @@ http
 accounts-base
 cfs:ejson-file
 ruslan:jquery-ui
+accounts-ui
+accounts-password
