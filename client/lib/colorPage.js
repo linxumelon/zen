@@ -453,27 +453,6 @@ $(function() {
         cacheInds = [];
     });
 
-    /*$('#button-save').click(function(e) {
-      
-      if(debug) {
-        console.log("save initiated");
-      }
-      e.preventDefault();
-      var format = 'png';
-      colorLayer = combineCanvas(colorLayer, colorContext, lineLayer, lineContext);
-    
-      function downloadCanvas() {
-        var dt = colorLayer.toDataURL();
-        window.location.href = dt;
-      }
-      
-      if(debug){
-        console.log(window.location.href);
-      }
-        
-        //artCanvas.export(format, callback);
-    });*/
-
     var saveButton = document.getElementById('button-save');
     saveButton.addEventListener('click', function(e) {
       colorContext.drawImage(lineLayer, 0, 0);
