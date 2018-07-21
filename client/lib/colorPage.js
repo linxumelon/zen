@@ -1,7 +1,7 @@
 import {$,jQuery} from 'meteor/jquery';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
-var debug = true;
+var debug = false;
 
 $(function() {
     var colorLayer    = document.getElementById('colorLayer');
@@ -463,13 +463,13 @@ $(function() {
       colorLayer = combineCanvas(colorLayer, colorContext, lineLayer, lineContext);
       var callback = function(/* data url of exported image */) {
       };
-      var dt = colorLayer.toDataURL("image/png;base64;");
-      dt = dt.replace("image/png","image/octet-stream");
-      this.href = dt;
-      // this.download = "design.png"
+      function downloadCanvas() {
+        var dt = colorLayer.toDataURL();
+        window.location.href = dt;
+      }
       
       if(debug){
-        console.log(this.href);
+        console.log(window.location.href);
       }
         
         //artCanvas.export(format, callback);
