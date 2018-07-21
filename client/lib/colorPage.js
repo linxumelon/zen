@@ -453,7 +453,7 @@ $(function() {
         cacheInds = [];
     });
 
-    $('#button-save').click(function(e) {
+    /*$('#button-save').click(function(e) {
       
       if(debug) {
         console.log("save initiated");
@@ -461,8 +461,7 @@ $(function() {
       e.preventDefault();
       var format = 'png';
       colorLayer = combineCanvas(colorLayer, colorContext, lineLayer, lineContext);
-      var callback = function(/* data url of exported image */) {
-      };
+    
       function downloadCanvas() {
         var dt = colorLayer.toDataURL();
         window.location.href = dt;
@@ -473,5 +472,13 @@ $(function() {
       }
         
         //artCanvas.export(format, callback);
+    });*/
+
+    var saveButton = document.getElementById('button-save');
+    saveButton.addEventListener('click', function(e) {
+      colorContext.drawImage(lineLayer, 0, 0);
+      var dataURL = colorLayer.toDataURL('image/png');
+      saveButton.href = dataURL;
+      saveButton.download = 'image.png';
     });
 });
