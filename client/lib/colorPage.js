@@ -1,7 +1,7 @@
 import {$,jQuery} from 'meteor/jquery';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
-var debug = false;
+var debug = true;
 
 $(function() {
     var colorLayer    = document.getElementById('colorLayer');
@@ -453,7 +453,7 @@ $(function() {
         cacheInds = [];
     });
 
-    $('#button-save').click(function(e) {
+    /*$('#button-save').click(function(e) {
       
       if(debug) {
         console.log("save initiated");
@@ -461,17 +461,26 @@ $(function() {
       e.preventDefault();
       var format = 'png';
       colorLayer = combineCanvas(colorLayer, colorContext, lineLayer, lineContext);
-      var callback = function(/* data url of exported image */) {
-      };
       function downloadCanvas() {
         var dt = colorLayer.toDataURL();
         window.location.href = dt;
+        window.open(dt, "", "width=700,height=700");
       }
+
+      
       
       if(debug){
         console.log(window.location.href);
       }
         
         //artCanvas.export(format, callback);
+    });*/
+
+    var saveButton = document.getElementById('button-save');
+    saveButton.addEventListener('click', function(e) {
+      colorContext.drawImage(lineLayer, 0, 0);
+      var dataURL = colorLayer.toDataURL('image/png');
+      saveButton.href = dataURL;
+      saveButton.download = 'image.png';
     });
 });
