@@ -58,6 +58,13 @@ $(function() {
     var templateImage = new Image();
     templateImage.src = FlowRouter.getQueryParam("image");
 
+    function combineCanvas (c1, ctx1, c2, ctx2) {
+      var result = c1;
+      ctx1.drawImage(c1, 0, 0);
+      ctx1.drawImage(c2, 0, 0);
+      return c1;
+    }
+
     templateImage.onload = function() {
       console.log("loaded");
         colorContext.drawImage(templateImage, 0, 0);
@@ -446,10 +453,25 @@ $(function() {
         cacheInds = [];
     });
 
-    $('#button-save').click(function() {
-        var format = 'png';
-        var callback = function(/* data url of exported image */) {
-        };
-        artCanvas.export(format, callback);
+    $('#button-save').click(function(e) {
+      
+      if(debug) {
+        console.log("save initiated");
+      }
+      e.preventDefault();
+      var format = 'png';
+      colorLayer = combineCanvas(colorLayer, colorContext, lineLayer, lineContext);
+      var callback = function(/* data url of exported image */) {
+      };
+      function downloadCanvas() {
+        var dt = colorLayer.toDataURL();
+        window.location.href = dt;
+      }
+      
+      if(debug){
+        console.log(window.location.href);
+      }
+        
+        //artCanvas.export(format, callback);
     });
 });
