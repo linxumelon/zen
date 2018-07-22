@@ -49,13 +49,6 @@ var floodfill = (function() {
 		if (i<0||i>=length) {
 			return false; //out of bounds
 		}
-		// if (matchOutlineColor(targetcolor[0], targetcolor[1], 
-		// 	    targetcolor[2], targetcolor[3])) {
-		// 	if(debug) {
-		// 		console.log("is black");
-		// 	}
-		// 	return false;
-		// }
 
 		if (data[i+3]===0 && fillcolor.a>0) {
 			return true;  //surface is invisible and fill is visible
@@ -66,7 +59,7 @@ var floodfill = (function() {
 			Math.abs(startcolor[1] - fillcolor.g)<=tolerance &&
 			Math.abs(startcolor[2] - fillcolor.b)<=tolerance ) {
 			if(debug) {
-				console.log("startcolor === fillcolor");
+				console.log("startcolor ~== fillcolor");
 			}
 			return false; //target is same as fill
 		}

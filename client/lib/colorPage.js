@@ -12,7 +12,7 @@ $(function() {
         return (r + g + b < 600 && a >= 40);
     };
     //turns non-black pixels to transparent
-    var rmWhiteP = function(canvas, ctx, pixelsD, lineCtx) {
+    var rmWhiteP = function(canvas, ctx, pixelsD, lineCtx, backUpContext) {
         var imageData = lineCtx.createImageData(700, 700);
         for (var i = 0; i < pixelsD.length; i+= 4){
           var r = pixelsD[i];
@@ -23,9 +23,12 @@ $(function() {
           if (matchOutlineColor(r, g, b, a) ){
               var y = Math.floor(i/2800);
               var x = (i/4) - y*700;
-              lineCtx.rect(x, y, 1, 1);
+              lineCtx.fillStyle = 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
+              lineCtx.fillRect(x, y, 1, 1);
+              backUpContext.fillRect(x, y, 1, 1)
               // a = 0.0;
            }
+           
         }
         ctx.putImageData(imageData, 0, 0);
         lineCtx.clip();
@@ -70,7 +73,7 @@ $(function() {
         colorContext.drawImage(templateImage, 0, 0);
         pixels = colorContext.getImageData(0, 0, 700, 700);
         pixelsD = pixels.data;
-        lineContext = rmWhiteP(colorLayer, colorContext, pixelsD, lineContext);
+        lineContext = rmWhiteP(colorLayer, colorContext, pixelsD, lineContext, backUpContext);
         backUpContext.drawImage(lineLayer, 0, 0);
         if (debug) {
           colorContext.clearRect(0, 0, 700, 700);
