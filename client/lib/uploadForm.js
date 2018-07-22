@@ -8,9 +8,9 @@ Meteor.subscribe('images');
 Template.uploadForm.events({
 	'submit form': function(event) {
 		event.preventDefault();
-		//const isPublic = document.getElementById("shareSettings").checked;
+		isPublic = document.getElementById("shareSettings").checked;
 		var newFile = event.target.fileInput;
-		//console.log(isPublic);			
+		console.log(isPublic);			
 		console.log("change has happened to file input");
 		console.log(newFile);
 		// FS.Utility.eachFile(event,function(file) {
@@ -20,9 +20,21 @@ Template.uploadForm.events({
 			console.log(typeof(file));
 			fsFile = new FS.File(file);
 			fsFile.owner = Meteor.userId();
-			fsFile.metadata = {
-			    ownerId:"Sample"
+			
+			if (isPublic) {
+				console.log("public"+Meteor.userId());
+				fsFile.metadata = {
+					public: "true",
+					ownerId: Meteor.userId()
+				};
+			} else {
+				console.log("private"+Meteor.userId());
+				fsFile.metadata = {
+					public: "false",
+					ownerId: Meteor.userId()
+				};
 			}
+	
 			Images.insert(fsFile, function (err, result) {
 				if (err) {
 					console.log("error" + err.reason);

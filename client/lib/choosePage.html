@@ -1,17 +1,26 @@
 <template name="choosePage">
 	<div class="body">
-		<div class = "pure-g">
-			{{#if currentUser}} 
+		{{#if currentUser}} 
+		<p> Your Uploads </p>
+		<div class = "pure-g" id="private">
+			{{#each privateImages}}
 			<div class = "pure-u-1-4">
-				<p> Your uploads </p>
+				<div class = "delete">
+					<img id="cross" src="images/IMG_delete.png"/>
+					<div class="deleteButton">
+						<img id="cheat" src="{{this.url store='thumbs' alt="" class="thumbnail"}}"/>
+					</div>
+				</div>
 				<!--<a href="{{this.url}}" target="_blank">-->
+				<div class = "img">	
 					<img src="{{this.url store='thumbs' alt="" class="thumbnail"}}"/>
-				
+				</div>
 			</div>
-
-			{{/if}}
-
-
+			{{/each}}
+		</div>
+		{{/if}}
+		<p> Public Uploads </p>
+		<div class = "pure-g" id="public">
 			{{#each images}}
 			<div class = "pure-u-1-4">
 				<!--<a href="{{this.url}}" target="_blank">-->

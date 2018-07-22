@@ -44,13 +44,3 @@ FlowRouter.route( '/color', {
 	},
 	name: 'colorPage'
 });
-
-FlowRouter.route( '/login', {
-	action: function() {
-		BlazeLayout.render( 'applicationLayout', {
-			header: 'headerTemplate',
-			main: 'login'
-		});
-	},
-	name: 'login'
-});
