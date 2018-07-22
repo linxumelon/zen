@@ -1,3 +1,12 @@
+
+.bugMessage {
+  top: 130px;
+  position: absolute;
+  color: red;
+  left: 100px;
+  z-index: 3;
+}
+
 .coloringBody { /*contains canvas and buttons*/
   width: 900px;
   margin: 0px auto;
