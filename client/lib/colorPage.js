@@ -3,7 +3,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 
 Template.colorPage.rendered = function() {
 
-  var debug = true;
+  var debug = false;
 
   $(function() {
       var colorLayer    = document.getElementById('colorLayer');
@@ -12,7 +12,7 @@ Template.colorPage.rendered = function() {
       var selectedLayer = document.getElementById('selectedLayer');
 
       var matchOutlineColor = function(r, g, b, a){
-          return (r + g + b < 600 && a >= 40);
+          return (r + g + b < 600 && a > 0);
       };
       //turns non-black pixels to transparent
       var rmWhiteP = function(canvas, ctx, pixelsD, lineCtx, backUpD) {
@@ -28,10 +28,9 @@ Template.colorPage.rendered = function() {
                 var x = (i/4) - y*700;
                 lineCtx.strokeStyle = 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
                 lineCtx.rect(x, y, 1, 1);
-                backUpD[i] = 255;
-                backUpD[i+1] = 255;
-                backUpD[i+2] = 255;
-                backUpD[i+3] = 1;
+                backUpCtx.strokeStyle = 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
+                backUpCtx.rect(x, y, 1, 1);
+              
                 // a = 0.0;
             }
             
@@ -39,6 +38,7 @@ Template.colorPage.rendered = function() {
           ctx.putImageData(imageData, 0, 0);
           lineCtx.clip();
           console.log("ok");
+
           return lineCtx;
       }
       function setCanvasAttr(c, width, height ,id) {
@@ -79,12 +79,13 @@ Template.colorPage.rendered = function() {
           colorContext.drawImage(templateImage, 0, 0);
           pixels = colorContext.getImageData(0, 0, 700, 700);
           pixelsD = pixels.data;
-          backUpContext.fillStyle = 'rgba(0, 0, 0, 0)';
-          backUpContext.fillRect(0, 0, 700, 700);
-          lineContext = rmWhiteP(colorLayer, colorContext, pixelsD, lineContext, backUpData.data);
-
+          backUpContext.strokeStyle = 'rgba(0, 0, 0, 0)';
+          backUpContext.rect(0, 0, 700, 700);
+          lineContext = rmWhiteP(colorLayer, colorContext, pixelsD, lineContext, backUpCtx);
+         
           if (debug) {
             console.log("selected Layer is "  + selectedLayer);
+            colorContext.clearRect(0, 0, 700, 700);
           }
           if(debug){
             console.log("selected context is" + selectedContext)
