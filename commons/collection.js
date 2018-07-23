@@ -9,17 +9,24 @@ var crop = function(fileObj, readStream, writeStream) {
   gm(readStream,fileObj.name()).resize('700','700' + '^').gravity('Center').extent('700', '700').stream('png').pipe(writeStream);
 };
 
+var originalStore = new FS.Store.GridFS("original", {path: "/uploads/images"});
 var imageStore = new FS.Store.GridFS("cropped", {path: "/uploads/images", transformWrite: crop });
 var thumbStore = new FS.Store.GridFS("thumbs", {path: "/uploads/thumbs", transformWrite: createThumb });
 Images = new FS.Collection("images", {
   stores: [
 		imageStore,
-		thumbStore
+		thumbStore,
+    originalStore
   ],
   filter: {
   	allow: {
-  		contentTypes: ['image/*'],
-  		extensions: ['png']
+  		contentTypes: ['image/*']
+  		
   	}
   }
 });
+
+/*var feedbackStore = new FS.Store.GridFS("feedbacks", {path: "/uploads/feedbacks"});
+Feedbacks = new FS.Collection("feedbacks", {
+  stores: [feedbackStore]
+});*/

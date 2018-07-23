@@ -25,13 +25,17 @@ Template.uploadForm.events({
 				console.log("public"+Meteor.userId());
 				fsFile.metadata = {
 					public: "true",
-					ownerId: Meteor.userId()
+					ownerId: Meteor.userId(),
+					isFeedback: "false",
+					message: "text"
 				};
 			} else {
 				console.log("private"+Meteor.userId());
 				fsFile.metadata = {
 					public: "false",
-					ownerId: Meteor.userId()
+					ownerId: Meteor.userId(),
+					isFeedback: "false",
+					message: "text"
 				};
 			}
 	
