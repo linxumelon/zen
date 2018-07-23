@@ -15,7 +15,7 @@ Template.colorPage.rendered = function() {
           return (r + g + b < 600 && a >= 40);
       };
       //turns non-black pixels to transparent
-      var rmWhiteP = function(canvas, ctx, pixelsD, lineCtx, backUpContext) {
+      var rmWhiteP = function(canvas, ctx, pixelsD, lineCtx, backUpD) {
           var imageData = lineCtx.createImageData(700, 700);
           for (var i = 0; i < pixelsD.length; i+= 4){
             var r = pixelsD[i];
@@ -28,16 +28,16 @@ Template.colorPage.rendered = function() {
                 var x = (i/4) - y*700;
                 lineCtx.strokeStyle = 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
                 lineCtx.rect(x, y, 1, 1);
-                backUpContext.strokeStyle = "black";
-                backUpContext.rect(x, y, 1, 1)
+                backUpD[i] = 255;
+                backUpD[i+1] = 255;
+                backUpD[i+2] = 255;
+                backUpD[i+3] = 1;
                 // a = 0.0;
             }
             
           }
           ctx.putImageData(imageData, 0, 0);
           lineCtx.clip();
-          lineCtx.fillStyle="black";
-          lineCtx.fillRect(0,0,700,700);
           console.log("ok");
           return lineCtx;
       }
@@ -58,8 +58,8 @@ Template.colorPage.rendered = function() {
       var selectedContext = selectedLayer.getContext("2d");
       var colorLayerData;
       var lineLayerData;
-      var backUpData;
-      var selectedData;
+      var backUpData = backUpContext.getImageData(0, 0, 700, 700);
+      var selectedData = selectedContext.getImageData(0, 0, 700, 700);
       var pixels;
       var pixelsD;
 
@@ -81,7 +81,7 @@ Template.colorPage.rendered = function() {
           pixelsD = pixels.data;
           backUpContext.fillStyle = 'rgba(0, 0, 0, 0)';
           backUpContext.fillRect(0, 0, 700, 700);
-          lineContext = rmWhiteP(colorLayer, colorContext, pixelsD, lineContext, backUpContext);
+          lineContext = rmWhiteP(colorLayer, colorContext, pixelsD, lineContext, backUpData.data);
 
           if (debug) {
             console.log("selected Layer is "  + selectedLayer);
@@ -222,10 +222,12 @@ Template.colorPage.rendered = function() {
           if(debug){
             console.log(selectedContext);
           }  
-          backUpContext.selectArea(mouseX, mouseY, 0, 0, 700, 700, selectedLayer, selectedContext);
-
+          select(mouseX, mouseY, backUpData.data,
+            selectedContext, colorLayer);
+  
           colorContext.drawImage(colorLayer, 0, 0);
           selectedContext.drawImage(selectedLayer, 0, 0);
+          selectedContext.clip();
           
         }
           
@@ -275,6 +277,126 @@ Template.colorPage.rendered = function() {
         redoCtx = [];
       }
 
+      function getPixelPos(x, y, canvas) {
+        return Math.floor((y*canvas.width + x) * 4);
+    }
+    function getPixelColor(x, y, imageData, canvas) {
+      var pixelPos = getPixelPos(x, y, canvas);
+      if(debug) {
+        // console.log("pixelPos = " + pixelPos);
+        // console.log("imageData[pixelPos]" + imageData[pixelPos]);
+      } 
+      return [imageData[pixelPos], imageData[pixelPos+1], imageData[pixelPos+2], imageData[pixelPos+3]];
+    }
+      
+    function matchOutline(pixelPos, imageData) {
+      if(debug){
+        // console.log("imageData[pixelPos+3] = " + imageData[pixelPos+3]);
+        // console.log("matchOutline: " + (imageData[pixelPos+3] > 0));
+      }
+      return (imageData[pixelPos+3] > 0);
+    }
+
+    function selectPixel (pixelPos, imageData, selectedCtx) {
+      if(debug) {
+        // console.log("fillPixel has been called.");
+      }
+      var y = Math.floor(pixelPos/2800);
+      var x = (pixelPos/4) - y*700;
+      var color;
+      if((x%3) === 0) {
+        color = 'rgba(0, 0, 0, 0.3)';
+      } else {
+        color = 'rgba(255, 255, 255, 0.3)';
+      }
+      selectedCtx.strokeStyle = color;
+      selectedCtx.rect(x, y, 1, 1);
+      imageData[pixelPos] = 200;
+      imageData[pixelPos+1] = 200;
+      imageData[pixelPos+2] = 200;
+      imageData[pixelPos+3] = 1;
+    }
+      
+    function select(startX, startY, imageData, selectedCtx, canvas) {
+      if(debug) {
+        console.log("imageData[1]=" + imageData[1]);
+        console.log(imageData);
+      }
+      pixelStack = new Array();
+      pixelStack.push([Math.floor(startX), Math.floor(startY)]);
+      if(debug) {
+      }
+    
+      while (pixelStack.length) {
+        var newPos, x, y, pixelPos, reachLeft, reachRight;
+        newPos = pixelStack.pop();
+        
+        x = newPos[0];
+        y = newPos[1];
+        pixelPos = getPixelPos(x, y, canvas);
+        if(debug) {
+          // console.log("x = " + x + ", y = " + y);
+        }
+        while (y >= 1 && 
+            !matchOutline(pixelPos, imageData)) {
+          pixelPos -= canvas.width * 4;
+          y--;
+          if(debug) {
+            // console.log("y = " + y);
+          }
+        }
+        reachLeft = false;
+        reachRight = false;
+        if(debug) {
+        }
+        if(debug) {
+          // console.log("now y = " + y);
+        }
+        y++;
+        pixelPos += canvas.width * 4;
+        if(debug) {
+          // console.log("y <= canvas.height - 2: " +(y <= canvas.height - 2) );
+        }
+        var i = 0;
+        while((y <= canvas.height - 2) && 
+            !matchOutline(pixelPos, imageData)) {
+              if(debug) {
+                // console.log("second whileloop, y = " + y);
+              }   
+          selectPixel(pixelPos, imageData, selectedCtx);
+          if (x > 0) {
+            if (!matchOutline(pixelPos - 4, imageData)) {
+              if (!reachLeft) {
+                pixelStack.push([x-1, y]);
+                reachLeft = true;
+              }
+            } else {
+              reachLeft = false;
+            }
+          }
+          if (x < canvas.width - 1) {
+            if (!matchOutline(pixelPos + 4, imageData)) {
+              if (!reachRight) {
+                pixelStack.push([x+1, y]);
+                reachRight = true;
+              }
+            } else {
+              reachRight = false;
+            }
+          }
+          y++;
+          pixelPos += canvas.width * 4;
+        }
+        if(debug) {
+          console.log("i = " + i);
+        }
+        i++;
+      }
+      if(debug) {
+        console.log("selection ended.");
+      }
+
+    }
       
       $('#colorPicker').colpick({
           color: 'df4b26',
@@ -401,22 +523,17 @@ Template.colorPage.rendered = function() {
           if(debug) {
             console.log("mode Select selected.");
           }
-          $('selectedLayer').on('click', function (e) {
-            if(debug) {
-              console.log("click received.")
-            }
-            var p = $(e.target).offset();
-            var x = Math.round((e.clientX || e.pageX) - p.left);
-            var y = Math.round((e.clientY || e.pageY) - p.top);  
-            if(debug){
-              console.log(selectedContext);
-            }  
-            selectArea(x, y, backUpContext.getImageData(), selectedContext.getImageData(),colorLayer);
-            
+          // $('selectedLayer').on('click', function (e) {
+          //   if(debug) {
+          //     console.log("click received.")
+          //   }
+          //   var p = $(e.target).offset();
+          //   var x = Math.round((e.clientX || e.pageX) - p.left);
+          //   var y = Math.round((e.clientY || e.pageY) - p.top);  
 
               
-              // magic();
-          });
+          //     // magic();
+          // });
 
         //   var magic = function () {
         //   if (imageInfo) {
