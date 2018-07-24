@@ -1,0 +1,11 @@
+.reportBody {
+   top: 200px;
+   width: 1000px;
+   margin: 0px auto;
+   float: top;
+   position: relative;
+}
+
+#reportTitle {
+	font-size: 30px;
+}

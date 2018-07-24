@@ -44,3 +44,33 @@ FlowRouter.route( '/color', {
 	},
 	name: 'colorPage'
 });
+
+FlowRouter.route( '/tutorial', {
+	action: function() {
+		BlazeLayout.render( 'applicationLayout', {
+			header: 'headerTemplate',
+			main: 'tutorial'
+		});
+	},
+	name: 'tutorial'
+});
+
+FlowRouter.route( '/reportPage', {
+	action: function() {
+		BlazeLayout.render( 'applicationLayout', {
+			header: 'headerTemplate',
+			main: 'reportPage'
+		});
+	},
+	name: 'reportPage'
+});
+
+FlowRouter.route( '/admin', {
+	action: function() {
+		BlazeLayout.render( 'applicationLayout', {
+			header: 'headerTemplate',
+			main: 'admin'
+		});
+	},
+	name: 'admin'
+});

@@ -1,0 +1,8 @@
+<template name="admin">
+	<div class="body">
+		{{#each images}}
+			<img src="{{this.url store='original' alt=""}}"/>
+			{{this.metadata.message}}
+		{{/each}}
+	</div>
+</template>
