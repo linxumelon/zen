@@ -3,13 +3,12 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 
 Template.colorPage.rendered = function() {
 
-  var debug = true;
+  var debug = false;
 
   $(function() {
       var colorLayer    = document.getElementById('colorLayer');
       var lineLayer    = document.getElementById('lineLayer');
       var backUpLayer = document.createElement('canvas');
-      var selectedLayer = document.getElementById('selectedLayer');
 
       var matchOutlineColor = function(r, g, b, a){
           return (r + g + b < 600 && a >= 40);
@@ -28,8 +27,7 @@ Template.colorPage.rendered = function() {
                 var x = (i/4) - y*700;
                 lineCtx.strokeStyle = 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
                 lineCtx.rect(x, y, 1, 1);
-                backUpContext.strokeStyle = "black";
-                backUpContext.rect(x, y, 1, 1)
+                backUpContext.fillRect(x, y, 1, 1)
                 // a = 0.0;
             }
             
@@ -41,25 +39,23 @@ Template.colorPage.rendered = function() {
           console.log("ok");
           return lineCtx;
       }
-      function setCanvasAttr(c, width, height ,id) {
-        c.setAttribute('width', width);// px
-        c.setAttribute('height', height);// px
-        c.setAttribute('id', id);
-      }
-      setCanvasAttr(colorLayer, 700, 700, 'colorLayer');
-      setCanvasAttr(lineLayer, 700, 700, 'lineLayer');
-      setCanvasAttr(backUpLayer, 700, 700, 'backUpLayer');
-      setCanvasAttr(selectedLayer, 700, 700, 'selectedLayer');
-     
+
+      colorLayer.setAttribute('width', 700);// px
+      colorLayer.setAttribute('height', 700);// px
+      colorLayer.setAttribute('id', 'colorLayer');
+      lineLayer.setAttribute('width', 700);// px
+      lineLayer.setAttribute('height', 700);// px
+      lineLayer.setAttribute('id', 'lineLayer');
+      backUpLayer.setAttribute('width', 700);// px
+      backUpLayer.setAttribute('height', 700);// px
+      backUpLayer.setAttribute('id', 'backUpLayer');
 
       var colorContext = colorLayer.getContext("2d");
       var lineContext = lineLayer.getContext("2d");
       var backUpContext = backUpLayer.getContext("2d");
-      var selectedContext = selectedLayer.getContext("2d");
       var colorLayerData;
       var lineLayerData;
-      var backUpData;
-      var selectedData;
+      var backUpContext;
       var pixels;
       var pixelsD;
 
@@ -79,15 +75,10 @@ Template.colorPage.rendered = function() {
           colorContext.drawImage(templateImage, 0, 0);
           pixels = colorContext.getImageData(0, 0, 700, 700);
           pixelsD = pixels.data;
-          backUpContext.fillStyle = 'rgba(0, 0, 0, 0)';
-          backUpContext.fillRect(0, 0, 700, 700);
           lineContext = rmWhiteP(colorLayer, colorContext, pixelsD, lineContext, backUpContext);
-
+          backUpContext.drawImage(lineLayer, 0, 0);
           if (debug) {
-            console.log("selected Layer is "  + selectedLayer);
-          }
-          if(debug){
-            console.log("selected context is" + selectedContext)
+            colorContext.clearRect(0, 0, 700, 700);
           }
           
           try {
@@ -200,9 +191,9 @@ Template.colorPage.rendered = function() {
       }
 
 
-      $('#selectedLayer').mousedown(function(e){
-        var mouseX = e.pageX - $('#selectedLayer').offset().left;
-        var mouseY = e.pageY - $('#selectedLayer').offset().top;
+      $('#lineLayer').mousedown(function(e){
+        var mouseX = e.pageX - $('#lineLayer').offset().left;
+        var mouseY = e.pageY - $('#lineLayer').offset().top;
         function dropperHelper(ctx) {
           var p;
           if (ctx === "color") {
@@ -212,21 +203,6 @@ Template.colorPage.rendered = function() {
           }
           var hex = ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
           $('#colorPicker').colpickSetColor(hex,true); //using colpick      
-        }
-
-        if (mode === "select") {
-          paint = false;
-          if(debug) {
-            console.log("click received.")
-          } 
-          if(debug){
-            console.log(selectedContext);
-          }  
-          backUpContext.selectArea(mouseX, mouseY, 0, 0, 700, 700, selectedLayer, selectedContext);
-
-          colorContext.drawImage(colorLayer, 0, 0);
-          selectedContext.drawImage(selectedLayer, 0, 0);
-          
         }
           
         if (mode === "brush") {          
@@ -241,20 +217,24 @@ Template.colorPage.rendered = function() {
         }
       });
       
-      $('#selectedLayer').mousemove(function(e){
+      $('#lineLayer').mousemove(function(e){
           
         if(paint){
-          var coordinateX = e.pageX - $('#selectedLayer').offset().left;
-          var coordinateY = e.pageY - $('#selectedLayer').offset().top; 
+          var coordinateX = e.pageX - $('#lineLayer').offset().left;
+          var coordinateY = e.pageY - $('#lineLayer').offset().top; 
 
           addClick(coordinateX, coordinateY, true);
           redraw();
           }
       });
 
-      $('#selectedLayer').mouseup(function(e){
+      $('#lineLayer').mouseup(function(e){
         paint = false;
       });
+
+      
+      
+      
 
       function addClick(x, y, dragging) {
         clickX.push(x);
@@ -397,24 +377,11 @@ Template.colorPage.rendered = function() {
       });
 
       $('#button-select').click(function() {
-          mode = "select";
-          if(debug) {
-            console.log("mode Select selected.");
-          }
-          $('selectedLayer').on('click', function (e) {
-            if(debug) {
-              console.log("click received.")
-            }
-            var p = $(e.target).offset();
-            var x = Math.round((e.clientX || e.pageX) - p.left);
-            var y = Math.round((e.clientY || e.pageY) - p.top);  
-            if(debug){
-              console.log(selectedContext);
-            }  
-            selectArea(x, y, backUpContext.getImageData(), selectedContext.getImageData(),colorLayer);
-            
-
-              
+          $('canvas').on('click', function (e) {
+              var p = $(e.target).offset();
+              var x = Math.round((e.clientX || e.pageX) - p.left);
+              var y = Math.round((e.clientY || e.pageY) - p.top);    
+              downPoint = { x: x, y: y };    
               // magic();
           });
 
@@ -436,53 +403,53 @@ Template.colorPage.rendered = function() {
 
         
 
-        // var checkOutLine = function() {
+        var checkOutLine = function() {
             
-        // }
+        }
         
-        // var colorPixel =  function (pixelPos, r, g, b, a) {
+        var colorPixel =  function (pixelPos, r, g, b, a) {
           
-        // }
-        // var drawBorder = function () {
-        //   if (masks.length) {
+        }
+        var drawBorder = function () {
+          if (masks.length) {
 
-        //     var x, y, k, i, j, m,
-        //         w = imageInfo.width,
-        //         h = imageInfo.height,
-        //         ctx = imageInfo.context,
-        //         imgData = ctx.createImageData(w, h),
-        //         res = imgData.data;
+            var x, y, k, i, j, m,
+                w = imageInfo.width,
+                h = imageInfo.height,
+                ctx = imageInfo.context,
+                imgData = ctx.createImageData(w, h),
+                res = imgData.data;
             
-        //     ctx.clearRect(0, 0, w, h);
+            ctx.clearRect(0, 0, w, h);
             
-        //     for (m = 0; m < masks.length; m++) {
+            for (m = 0; m < masks.length; m++) {
               
-        //       cacheInd = cacheInds[m];
+              cacheInd = cacheInds[m];
               
-        //       for (j = 0; j < cacheInd.length; j++) {
-        //         i = cacheInd[j];
-        //         x = i % w; // calc x by index
-        //         y = (i - x) / w; // calc y by index
-        //         k = (y * w + x) * 4; 
-        //         if ((x + y + hatchOffset) % (hatchLength * 2) < hatchLength) { 
-        //           // detect hatch color 
-        //           res[k + 3] = 255; // black, change only alpha
-        //         } else {
-        //           res[k] = 255; // white
-        //           res[k + 1] = 255;
-        //           res[k + 2] = 255;
-        //           res[k + 3] = 255;
-        //         }
-        //       }
-        //     }
-        //     ctx.putImageData(imgData, 0, 0);
-        //   }
-        // };
+              for (j = 0; j < cacheInd.length; j++) {
+                i = cacheInd[j];
+                x = i % w; // calc x by index
+                y = (i - x) / w; // calc y by index
+                k = (y * w + x) * 4; 
+                if ((x + y + hatchOffset) % (hatchLength * 2) < hatchLength) { 
+                  // detect hatch color 
+                  res[k + 3] = 255; // black, change only alpha
+                } else {
+                  res[k] = 255; // white
+                  res[k + 1] = 255;
+                  res[k + 2] = 255;
+                  res[k + 3] = 255;
+                }
+              }
+            }
+            ctx.putImageData(imgData, 0, 0);
+          }
+        };
 
-        // setInterval(function () {
-        //   hatchOffset = (hatchOffset + 1) % (hatchLength * 2);
-        //   drawBorder();
-        // }, 100);
+        setInterval(function () {
+          hatchOffset = (hatchOffset + 1) % (hatchLength * 2);
+          drawBorder();
+        }, 100);
       });
 
       $('#button-deselect').click(function() {
@@ -493,10 +460,10 @@ Template.colorPage.rendered = function() {
 
       var saveButton = document.getElementById('button-save');
       saveButton.addEventListener('click', function(e) {
-      colorContext.drawImage(lineLayer, 0, 0);
-      var dataURL = colorLayer.toDataURL('image/png');
-      saveButton.href = dataURL;
-      saveButton.download = 'image.png';
+        colorContext.drawImage(lineLayer, 0, 0);
+        var dataURL = colorLayer.toDataURL('image/png');
+        saveButton.href = dataURL;
+        saveButton.download = 'image.png';
       });
   });
 }
