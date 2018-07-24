@@ -1,5 +1,4 @@
-var selectArea = function() {
-	  function getPixelPos(x, y, canvas) {
+    function getPixelPos(x, y, canvas) {
       return Math.floor((y*canvas.width + x) * 4);
     }
     function getPixelColor(x, y, imageData, canvas) {
@@ -8,11 +7,9 @@ var selectArea = function() {
         console.log("pixelPos = " + pixelPos);
         console.log("imageData[pixelPos]" + imageData[pixelPos]);
       }
+    
       return [imageData[pixelPos], imageData[pixelPos+1], imageData[pixelPos+2], imageData[pixelPos+3]];
-    }
-
-  
-  
+	}
 	
     function matchOutlineColor(pixelPos, imageData) {
       if(debug){
@@ -27,14 +24,10 @@ var selectArea = function() {
 	  selectedData[pixelPos] = 200;
 	  selectedData[pixelPos+1] = 200;
 	  selectedData[pixelPos+2] = 200;
-    selectedData[pixelPos+3] = 1;
-    imageData[pixelPos] = 200;
-	  imageData[pixelPos+1] = 200;
-	  imageData[pixelPos+2] = 200;
-    imageData[pixelPos+3] = 1; 
+	  selectedData[pixelPos+3] = 1;
 	}
 	
-    function select(startX, startY, imageData, selectedData, canvas) {
+    function selectArea(startX, startY, imageData, selectedData, canvas) {
       if(debug) {
       }
 	  var startColor = getPixelColor(startX, startY, imageData, canvas); 
@@ -105,5 +98,4 @@ var selectArea = function() {
         }
       }
       return selectedData;
-	}
-}
+    }
