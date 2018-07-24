@@ -3,7 +3,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 
 Template.colorPage.rendered = function() {
 
-  var debug = true;
+  var debug = false;
 
   $(function() {
       var colorLayer    = document.getElementById('colorLayer');
@@ -420,6 +420,7 @@ Template.colorPage.rendered = function() {
 
       $('#button-brush').click(function() {
           mode = "brush";
+          $('#currentMode').html(mode);
           if(debug){
             console.log("Mode brush selected.")
           }
@@ -427,6 +428,7 @@ Template.colorPage.rendered = function() {
 
       $('#button-fill').click(function() {
           mode = "fill";
+          $('#currentMode').html(mode);
           if(debug){
             console.log("Mode fill selected.");
           }
@@ -444,6 +446,7 @@ Template.colorPage.rendered = function() {
 
       $('#button-eyedrop').click(function() {    
         mode = "dropper";
+        $('#currentMode').html(mode);
       });
           
       function rgbToHex(r, g, b) {
@@ -511,12 +514,14 @@ Template.colorPage.rendered = function() {
       });
 
       $('#button-select').click(function() {
-        layer = 'mutiselect';
-        if (mode === "brush") {
+        layer = 'multiselect';
+        if (mode === "brush" || mode === "fill") {
           mode = "select";
+          $('#currentMode').html(mode);
           paint = false;
         } else if (mode === "select"){
           mode = "brush";
+          $('#currentMode').html(mode);
           selectedContext.clip();
           if(debug) {
             console.log("mode changed from select to brush");
@@ -554,6 +559,7 @@ Template.colorPage.rendered = function() {
         value: 50,
         change: function(event, ui) {
           lineWidth = ui.value;
+          $('#sizeIndicator').val(ui.value);
         }
       });
       
@@ -563,8 +569,25 @@ Template.colorPage.rendered = function() {
         value: 100,
         change: function(event, ui) {
           opacity = ui.value;
+          $('#opacityIndicator').val(ui.value);
         }
       });
+
+      $('#sizeIndicator').val(lineWidth);
+
+      $('#opacityIndicator').val(opacity);
+
+      $('#sizeIndicator').change(function() {
+        lineWidth = this.value;
+        $('#sizeSlide').slider({value: this.value});
+      })
+
+      $('#opacityIndicator').change(function() {
+        opacity = this.value;
+        $('#opacitySlide').slider({value: this.value});
+      })
+
+      $('#currentMode').html(mode);
 
       var saveButton = document.getElementById('button-save');
       saveButton.addEventListener('click', function(e) {

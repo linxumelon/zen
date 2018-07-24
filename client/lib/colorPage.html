@@ -12,12 +12,14 @@
       </div>
          
       <div class="sizeSlider">
-        <p class="coloringAttr"> Brush size </p>
+        <p class="coloringAttr" style="width: 150px;"> Brush size </p>
+        <input type="text" id="sizeIndicator"/>
           <div id="sizeSlide"></div>
       </div>
 
       <div class="opacitySlider">
-        <p class="coloringAttr"> Brush opacity </p>
+        <p class="coloringAttr" style="width: 150px;"> Brush opacity </p>
+        <input type="text" id="opacityIndicator"/>
         <div id="opacitySlide"></div>
       </div>
    
@@ -35,13 +37,15 @@
       <button id="button-eyedrop"><img id="eyedropperImg" src="images/IMG_eyedropper.png"/></button>
       <button id="button-undo"><img id="undoImg" src="images/IMG_undo.png"/></button>
       <button id="button-redo"><img id="redoImg" src="images/IMG_undo.png"/></button>
-      <button id="button-zoom-in"><img id="zoomInImg" src="images/IMG_zoomIn.png"/>  </button>
+      <!--<button id="button-zoom-in"><img id="zoomInImg" src="images/IMG_zoomIn.png"/>  </button>
       <button id="button-zoom-out"><img id="zoomOutImg" src="images/IMG_zoomOut.png"/></button>
+    -->
       <div class="selectButton">
         <button id="button-select"> Select </button>
         <button id="button-deselect"> De-select </button>
       </div>
       <button> <a href="#" id="button-save" style="color: white; text-decoration: none;">Save</a> </button>
+      <div class="displayMode">Current mode: <span id="currentMode">Brush</span></div>
     </div>  
 
     <div id="canvas-container">

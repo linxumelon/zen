@@ -10,6 +10,8 @@
 .coloringAttr {
   color:#DBD7D6;
   font-size: 20px;
+  margin-top: 10px;
+  padding-left: 10px;
 }
 
 .coloringBody { /*contains canvas and buttons*/
@@ -49,7 +51,6 @@
 
 .horiz-bar {
   float: left;
-  
 }
 
 .horiz-bar button {
@@ -135,6 +136,40 @@
 
 .selectButton button { /*for select and deselect buttons*/
   padding: 0px 5px;
+}
+
+.displayMode {
+  float: left;
+  position: absolute;
+  width: 200px;
+  height: 53px;
+  left: 0px;
+  top: 0px;
+  background-color: dimgrey;
+  text-align: center;
+  padding-top: 12px;
+  font-size: 20px;
+  color: #DBD7D6;
+}
+
+#sizeIndicator {
+  width: 50px;
+  position: absolute;
+  background-color: #dbdbdb;
+  border-color: #dbdbdb;
+  left: 140px;
+  top: 270px;
+  text-align: center;
+}
+
+#opacityIndicator {
+  width: 50px;
+  position: absolute;
+  background-color: #dbdbdb;
+  border-color: #dbdbdb;
+  left: 140px;
+  top: 330px;
+  text-align: center;
 }
 
 #eyedropperImg {
