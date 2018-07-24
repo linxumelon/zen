@@ -120,7 +120,7 @@ var floodfill = (function() {
 
 		//Maximum tolerance of 254, Default to 0
 		tolerance = (!isNaN(tolerance)) ? Math.min(Math.abs(Math.round(tolerance)),254) : 0;
-
+        
 		return floodfill(data,xi,yi,color,tolerance,width,height);
 	};
 
@@ -141,7 +141,10 @@ var floodfill = (function() {
 			color.r = parseInt(vals[0])||0;
 			color.g = parseInt(vals[1])||0;
 			color.b = parseInt(vals[2])||0;
-			color.a = Math.round((opacity/100)*255);
+			color.a = (opacity/100) * 300;
+			if(debug) {
+				console.log("opacity = " + opacity);
+			}
 		}
 		return color;
 	};
@@ -166,7 +169,6 @@ var floodfill = (function() {
 		var data = image.data;
 		var width = image.width;
 		var height = image.height;
-		
 		if(width>0 && height>0) {
 			fillUint8ClampedArray(data,x,y,color,tolerance,width,height);
 			ctx.putImageData(image,left,top);

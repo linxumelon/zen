@@ -3,80 +3,96 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 
 Template.colorPage.rendered = function() {
 
-  var debug = false;
+  var debug = true;
 
   $(function() {
       var colorLayer    = document.getElementById('colorLayer');
       var lineLayer    = document.getElementById('lineLayer');
       var backUpLayer = document.createElement('canvas');
+      var selectedLayer = document.getElementById('selectedLayer');
+      var selectBUC = document.createElement('canvas');
+      var emptyC = document.createElement('canvas');
 
       var matchOutlineColor = function(r, g, b, a){
-          return (r + g + b < 600 && a >= 40);
+          return (r <200 || g < 200 || b < 200 && a > 200);
       };
-      //turns non-black pixels to transparent
-      var rmWhiteP = function(canvas, ctx, pixelsD, lineCtx, backUpContext) {
+
+      //Create lineLayer
+      function rmWhiteP(canvas, ctx, pixelsD, lineCtx, selectBUCtx) {
           var imageData = lineCtx.createImageData(700, 700);
           for (var i = 0; i < pixelsD.length; i+= 4){
             var r = pixelsD[i];
             var g = pixelsD[i+1];
             var b = pixelsD[i+2];
             var a = pixelsD[i+3];
-            
-            if (matchOutlineColor(r, g, b, a) ){
-                var y = Math.floor(i/2800);
-                var x = (i/4) - y*700;
-                lineCtx.strokeStyle = 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
-                lineCtx.rect(x, y, 1, 1);
-                backUpContext.fillRect(x, y, 1, 1)
-                // a = 0.0;
+
+            if(debug) {
+              // console.log("r = " + r + ", g = " + g + ", b = " + b + ", a = " + a);
             }
             
+            if (matchOutlineColor(r, g, b, a) ){
+              if(debug) {
+                // console.log("matches outline");
+              }
+                var y = Math.floor(i/2800);
+                var x = (i/4) - y*700;
+                lineCtx.strokeStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+                lineCtx.rect(x, y, 1, 1);
+                selectBUCtx.fillStyle = 'rgba(255, 255, 255, 1)';
+                selectBUCtx.fillRect(x, y, 1, 1);
+                if(debug) {
+                  // console.log("r = " + r);
+                }
+            }
           }
           ctx.putImageData(imageData, 0, 0);
           lineCtx.clip();
-          lineCtx.fillStyle="black";
-          lineCtx.fillRect(0,0,700,700);
+          lineCtx.fill();
           console.log("ok");
           return lineCtx;
       }
-
-      colorLayer.setAttribute('width', 700);// px
-      colorLayer.setAttribute('height', 700);// px
-      colorLayer.setAttribute('id', 'colorLayer');
-      lineLayer.setAttribute('width', 700);// px
-      lineLayer.setAttribute('height', 700);// px
-      lineLayer.setAttribute('id', 'lineLayer');
-      backUpLayer.setAttribute('width', 700);// px
-      backUpLayer.setAttribute('height', 700);// px
-      backUpLayer.setAttribute('id', 'backUpLayer');
-
+      //Set canvas attribute
+      function setCanvasAttr(c, width, height ,id) {
+        c.setAttribute('width', width);// px
+        c.setAttribute('height', height);// px
+        c.setAttribute('id', id);
+      }
+      setCanvasAttr(colorLayer, 700, 700, 'colorLayer');
+      setCanvasAttr(lineLayer, 700, 700, 'lineLayer');
+      setCanvasAttr(backUpLayer, 700, 700, 'backUpLayer');
+      setCanvasAttr(selectedLayer, 700, 700, 'selectedLayer');
+      setCanvasAttr(selectBUC, 700, 700, 'selectBUC');
+      setCanvasAttr(emptyC, 700, 700, 'emptyC');
+     
+      //Initialize canvas context and image data
       var colorContext = colorLayer.getContext("2d");
       var lineContext = lineLayer.getContext("2d");
       var backUpContext = backUpLayer.getContext("2d");
+      var selectedContext = selectedLayer.getContext("2d");
+      var selectBUCtx = selectBUC.getContext("2d");
+      var emptyCtx = emptyC.getContext("2d");
+    
       var colorLayerData;
       var lineLayerData;
       var backUpContext;
       var pixels;
       var pixelsD;
 
-      //imports template png to line layer
+      //Imports template png
       var templateImage = new Image();
       templateImage.src = FlowRouter.getQueryParam("image");
-
-      function combineCanvas (c1, ctx1, c2, ctx2) {
-        var result = c1;
-        ctx1.drawImage(c1, 0, 0);
-        ctx1.drawImage(c2, 0, 0);
-        return c1;
-      }
+      // emptyCtx.fillStyle = 'rgba(255, 255, 255, 0)';
+      // emptyCtx.fillRect(0, 0, 700, 700);
 
       templateImage.onload = function() {
         console.log("loaded");
           colorContext.drawImage(templateImage, 0, 0);
           pixels = colorContext.getImageData(0, 0, 700, 700);
           pixelsD = pixels.data;
-          lineContext = rmWhiteP(colorLayer, colorContext, pixelsD, lineContext, backUpContext);
+          lineContext = rmWhiteP(colorLayer, colorContext, pixelsD, lineContext, selectBUCtx);
+          lineContext.drawImage(lineLayer, 0, 0);
           backUpContext.drawImage(lineLayer, 0, 0);
+          selectedContext.drawImage(emptyC, 0, 0);
           if (debug) {
             colorContext.clearRect(0, 0, 700, 700);
           }
@@ -87,13 +103,10 @@ Template.colorPage.rendered = function() {
           } catch (ex) {
 
           }
-          resourceLoaded();
+          redraw();
       };
 
-      function resourceLoaded() {
-          redraw();
-      }
-
+      //Initialize paint feature var
       var mode = "brush"; //"fill" is fill mode, "dropper" is eyedropper
       var lineWidth = 50;
       var opacity = 100; //percent
@@ -110,6 +123,7 @@ Template.colorPage.rendered = function() {
       var clickSize = new Array();
       var clickOpacity = new Array();
       var clickCtx = new Array();
+      var clickSelect = new Array();//context of selected area
 
       var redoX = new Array();
       var redoY = new Array();
@@ -119,77 +133,203 @@ Template.colorPage.rendered = function() {
       var redoSize = new Array();
       var redoOpacity = new Array();
       var redoCtx = new Array();
+      var redoSelect = new Array();
+
       
       function redraw(){
-        colorContext.clearRect(0, 0, 700, 700);
-        colorContext.drawImage(templateImage, 0, 0);
-        colorContext.lineJoin = "round";
-        lineContext.clearRect(0, 0, 700, 700);
-        lineContext.drawImage(backUpLayer, 0, 0);
-        lineContext.lineJoin = "round";
+
+        function canvasResetHelper(ctx, x, y, width, height, image) {
+          ctx.clearRect(0, 0, 700, 700);
+          ctx.drawImage(image, 0, 0);
+          ctx.lineJoin = "round";
+        }
+
+        canvasResetHelper(colorContext, 0, 0, 700, 700, templateImage);
+        canvasResetHelper(lineContext, 0, 0, 700, 700, backUpLayer);
+        // selectedContext.drawImage(selectedLayer, 0, 0);
+        // selectedContext.lineJoin = "round";
 
         if(clickX.length > 100000) {
-
         }
-        
-        for(var i=0; i < clickX.length; i++) {  
+
+        function brushHelper (ctx, i) {
+          ctx.globalAlpha = clickOpacity[i] / 100;
+          ctx.beginPath();
+          if(clickDrag[i] && i){
+            ctx.moveTo(clickX[i-1], clickY[i-1]);
+          }else{
+            ctx.moveTo(clickX[i]-1, clickY[i]);
+          }
+          ctx.lineTo(clickX[i], clickY[i]);
+          ctx.closePath();
+          ctx.strokeStyle = clickColor[i];
+          ctx.lineWidth = clickSize[i];
+          ctx.stroke();
+        }
+
+        for (var i=0; i < clickX.length; i++) {  
           if (clickMode[i] === "brush") {
             if(debug){
               console.log("x = " + clickX[i] + ", y = " + clickY[i]);
             }
             if (clickCtx[i] === "color") {
               console.log("color");
-              colorContext.beginPath();
-              colorContext.globalAlpha = clickOpacity[i] / 100;
-              if(clickDrag[i] && i){
-                colorContext.moveTo(clickX[i-1], clickY[i-1]);
-              }else{
-                colorContext.moveTo(clickX[i]-1, clickY[i]);
-              }
-              colorContext.lineTo(clickX[i], clickY[i]);
-              colorContext.closePath();
-              colorContext.strokeStyle = clickColor[i];
-              colorContext.lineWidth = clickSize[i];
-              colorContext.stroke();
-
+              brushHelper(colorContext, i);
             } else if (clickCtx[i] === "line") {
               console.log("line");
-              lineContext.beginPath();
-          
-              if(clickDrag[i] && i){
-                lineContext.moveTo(clickX[i-1], clickY[i-1]);
-              }else{
-                lineContext.moveTo(clickX[i]-1, clickY[i]);
-              }
-              lineContext.lineTo(clickX[i], clickY[i]);
-              lineContext.closePath();
-              lineContext.strokeStyle = clickColor[i];
-              lineContext.lineWidth = clickSize[i];
-              lineContext.stroke();
-              lineContext.globalAlpha = clickOpacity[i] / 100;
+              brushHelper(lineContext, i);
+            } else if (clickCtx[i] === "multiselect") {
+              console.log("multiselect");
+              brushHelper(selectedContext, i);
             }
-
           } else if (clickMode[i] === "fill") {
             colorContext.fillStyle = clickColor[i];
             if(debug){
               console.log("x = " + clickX[i] + ", y = " + clickY[i]);
             }
             var opacity = clickOpacity[i];
-            // var rgb = hexToRgb(colorContext.fillStyle);
-            // var fillColor = [rgb[0], rgb[1], rgb[2], opacity];
             if(debug) {
               console.log("fillcolor chosen is " + clickColor[i]);
             }
             colorContext.fillStyle = clickColor[i];
             colorContext.opacity = opacity;
+            if(debug) {
+              console.log("opacity = " + opacity);
+            }
             colorContext.fillFlood(clickX[i], clickY[i], 20);
           }   
-          
         }
+        // colorContext.drawImage(selectedLayer, 0, 0);
+        // selectedContext.drawImage(emptyC, 0, 0);
         colorContext.globalAlpha = 1;
         lineContext.globalAlpha = 1;
       }
 
+      function getPixelPos(x, y, canvas) {
+        return Math.floor((y*canvas.width + x) * 4);
+      }
+      function getPixelColor(x, y, imageData, canvas) {
+        var pixelPos = getPixelPos(x, y, canvas);
+        if(debug) {
+          // console.log("pixelPos = " + pixelPos);
+          // console.log("imageData[pixelPos]" + imageData[pixelPos]);
+        } 
+        return [imageData[pixelPos], imageData[pixelPos+1], imageData[pixelPos+2], imageData[pixelPos+3]];
+      }
+        
+      function matchOutline(pixelPos, imageData) {
+        if(debug){
+          // console.log("imageData[pixelPos+3] = " + imageData[pixelPos+3]);
+          // console.log("matchOutline: " + (imageData[pixelPos+3] > 0));
+        }
+        return (imageData[pixelPos+3] > 0);
+      }
+
+      function selectPixel (pixelPos, imageData, selectedCtx) {
+        if(debug) {
+          // console.log("fillPixel has been called.");
+        }
+        var y = Math.floor(pixelPos/2800);
+        var x = (pixelPos/4) - y*700;
+        var color;
+        if((x%4 === 0)&&(y%4 === 0)) {
+          color = 'rgba(0, 0, 0, 0.6)';
+        } else {
+          color = 'rgba(255, 255, 255, 0)';
+        }
+        selectedCtx.strokeStyle = color;
+        selectedCtx.strokeRect(x, y, 1, 1);
+        if(debug) {
+          console.log("pixel set on selectedCtx");
+        }
+        
+        imageData[pixelPos] = 200;
+        imageData[pixelPos+1] = 200;
+        imageData[pixelPos+2] = 200;
+        imageData[pixelPos+3] = 1;
+      }
+        
+      function select(startX, startY, imageData, selectedCtx, canvas) {
+        if(debug) {
+          console.log("imageData[1]=" + imageData[1]);
+          console.log(imageData);
+        }
+        pixelStack = new Array();
+        pixelStack.push([Math.floor(startX), Math.floor(startY)]);
+        if(debug) {
+        }
+      
+        while (pixelStack.length) {
+          var newPos, x, y, pixelPos, reachLeft, reachRight;
+          newPos = pixelStack.pop();
+          
+          x = newPos[0];
+          y = newPos[1];
+          pixelPos = getPixelPos(x, y, canvas);
+          if(debug) {
+            // console.log("x = " + x + ", y = " + y);
+          }
+          while (y >= 1 && 
+              !matchOutline(pixelPos, imageData)) {
+            pixelPos -= canvas.width * 4;
+            y--;
+            if(debug) {
+              // console.log("y = " + y);
+            }
+          }
+          reachLeft = false;
+          reachRight = false;
+          if(debug) {
+          }
+          if(debug) {
+            // console.log("now y = " + y);
+          }
+          y++;
+          pixelPos += canvas.width * 4;
+          if(debug) {
+            // console.log("y <= canvas.height - 2: " +(y <= canvas.height - 2) );
+          }
+          var i = 0;
+          while((y <= canvas.height - 2) && 
+              !matchOutline(pixelPos, imageData)) {
+                if(debug) {
+                  // console.log("second whileloop, y = " + y);
+                }   
+            selectPixel(pixelPos, imageData, selectedCtx);
+            if (x > 0) {
+              if (!matchOutline(pixelPos - 4, imageData)) {
+                if (!reachLeft) {
+                  pixelStack.push([x-1, y]);
+                  reachLeft = true;
+                }
+              } else {
+                reachLeft = false;
+              }
+            }
+            if (x < canvas.width - 1) {
+              if (!matchOutline(pixelPos + 4, imageData)) {
+                if (!reachRight) {
+                  pixelStack.push([x+1, y]);
+                  reachRight = true;
+                }
+              } else {
+                reachRight = false;
+              }
+            }
+            y++;
+            pixelPos += canvas.width * 4;
+          }
+          if(debug) {
+            console.log("i = " + i);
+          }
+          i++;
+        }
+        if(debug) {
+          console.log("selection ended.");
+        }
+        // selectedContext.fill();
+        return selectedContext;
+      }
 
       $('#lineLayer').mousedown(function(e){
         var mouseX = e.pageX - $('#lineLayer').offset().left;
@@ -200,6 +340,8 @@ Template.colorPage.rendered = function() {
             p = colorContext.getImageData(mouseX, mouseY, 1, 1).data;
           } else if (ctx === "line") {
             p = lineContext.getImageData(mouseX, mouseY, 1, 1).data;
+          } else if (ctx === "multiselect") {
+            p = selectedContext.getImageData(mouseX, mouseY, 1, 1).data;
           }
           var hex = ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
           $('#colorPicker').colpickSetColor(hex,true); //using colpick      
@@ -214,15 +356,13 @@ Template.colorPage.rendered = function() {
         } else if (mode === "fill") {
           addClick(mouseX, mouseY, false);
           redraw();
-        }
+        } 
       });
       
       $('#lineLayer').mousemove(function(e){
-          
         if(paint){
           var coordinateX = e.pageX - $('#lineLayer').offset().left;
           var coordinateY = e.pageY - $('#lineLayer').offset().top; 
-
           addClick(coordinateX, coordinateY, true);
           redraw();
           }
@@ -232,9 +372,17 @@ Template.colorPage.rendered = function() {
         paint = false;
       });
 
-      
-      
-      
+      $('#lineLayer').click(function(e) {
+        if (mode === "select") {
+          var mouseX = e.pageX - $('#lineLayer').offset().left;
+          var mouseY = e.pageY - $('#lineLayer').offset().top; 
+          var selectBUD = selectBUCtx.getImageData(0, 0, 700, 700);
+          selectedContext = select(mouseX, mouseY, selectBUD.data,
+            selectedContext, colorLayer);
+          // colorContext.drawImage(colorLayer, 0, 0);
+          // selectedContext.clip();
+        }
+      });
 
       function addClick(x, y, dragging) {
         clickX.push(x);
@@ -245,6 +393,7 @@ Template.colorPage.rendered = function() {
         clickSize.push(lineWidth);
         clickOpacity.push(opacity);
         clickCtx.push(layer);
+        
         redoX = [];
         redoY = [];
         redoMode = [];
@@ -253,6 +402,10 @@ Template.colorPage.rendered = function() {
         redoSize = [];
         redoOpacity = [];
         redoCtx = [];
+        if(layer === "multiselect") {
+          clickSelect.push(selectedLayer);
+          redoSelect = [];
+        }
       }
 
       
@@ -289,6 +442,7 @@ Template.colorPage.rendered = function() {
       });
 
       $('#button-color-layer').click(function() {
+          console.log("colorLayer");
           layer = "color";
       });
 
@@ -315,6 +469,7 @@ Template.colorPage.rendered = function() {
           redoSize.push(clickSize.pop());
           redoOpacity.push(clickOpacity.pop());
           redoCtx.push(clickCtx.pop());
+          redoSelect.push(clickSelect.pop());
           
           if (drag) {
             undo();
@@ -339,6 +494,7 @@ Template.colorPage.rendered = function() {
           clickSize.push(redoSize.pop());
           clickOpacity.push(redoOpacity.pop());
           clickCtx.push(redoCtx.pop());
+          clickSelect.push(redoSelect.pop());
           if (redoDrag.length > 0 && redoDrag[redoDrag.length - 1]) {
             redo();
           } else {
@@ -358,6 +514,44 @@ Template.colorPage.rendered = function() {
 
       });
 
+      $('#button-select').click(function() {
+        layer = 'mutiselect';
+        if (mode === "brush") {
+          mode = "select";
+          paint = false;
+        } else if (mode === "select"){
+          mode = "brush";
+          selectedContext.clip();
+          if(debug) {
+            console.log("mode changed from select to brush");
+          }
+          // selectedContext.clearRect(0, 0, 700, 700);
+          if(debug) {
+            console.log(selectedContext);
+            console.log("selectedContext has been cleared.");
+          }
+          selectedContext.drawImage(emptyC, 0, 0);
+        }
+        if(debug) {
+          console.log(mode);
+        }
+        
+        // $('lineLayer').click(function() {
+          // var selectBUD = selectBUCtx.getImageData(0, 0, 700, 700);
+          // select(mouseX, mouseY, selectBUD.data,
+          //   selectedContext, colorLayer);
+          //   colorContext.drawImage(colorLayer, 0, 0);
+          //   selectedContext.drawImage(selectedLayer, 0, 0);
+          //   selectedContext.clip();
+        // })
+      });
+
+      $('#button-deselect').click(function() {
+          mask = null;
+          masks = [];
+          cacheInds = [];
+      });
+
       $('#sizeSlide').slider({
         min: 1,
         max: 100,
@@ -374,88 +568,6 @@ Template.colorPage.rendered = function() {
         change: function(event, ui) {
           opacity = ui.value;
         }
-      });
-
-      $('#button-select').click(function() {
-          $('canvas').on('click', function (e) {
-              var p = $(e.target).offset();
-              var x = Math.round((e.clientX || e.pageX) - p.left);
-              var y = Math.round((e.clientY || e.pageY) - p.top);    
-              downPoint = { x: x, y: y };    
-              // magic();
-          });
-
-        //   var magic = function () {
-        //   if (imageInfo) {
-        //     var image = {
-        //       data: imageInfo.data,
-        //       width: imageInfo.width,
-        //       height: imageInfo.height,
-        //       bytes: 4
-        //     };
-        //     mask = MagicWand.floodfill(downPoint.x, downPoint.y, );
-        //     mask = MagicWand.gaussBlurOnlyBorder(mask, blurRadius);
-        //     masks.push(mask);
-        //     cacheInds.push(MagicWand.getBorderIndices(mask));
-        //     drawBorder(true);
-        //   }
-        // };
-
-        
-
-        var checkOutLine = function() {
-            
-        }
-        
-        var colorPixel =  function (pixelPos, r, g, b, a) {
-          
-        }
-        var drawBorder = function () {
-          if (masks.length) {
-
-            var x, y, k, i, j, m,
-                w = imageInfo.width,
-                h = imageInfo.height,
-                ctx = imageInfo.context,
-                imgData = ctx.createImageData(w, h),
-                res = imgData.data;
-            
-            ctx.clearRect(0, 0, w, h);
-            
-            for (m = 0; m < masks.length; m++) {
-              
-              cacheInd = cacheInds[m];
-              
-              for (j = 0; j < cacheInd.length; j++) {
-                i = cacheInd[j];
-                x = i % w; // calc x by index
-                y = (i - x) / w; // calc y by index
-                k = (y * w + x) * 4; 
-                if ((x + y + hatchOffset) % (hatchLength * 2) < hatchLength) { 
-                  // detect hatch color 
-                  res[k + 3] = 255; // black, change only alpha
-                } else {
-                  res[k] = 255; // white
-                  res[k + 1] = 255;
-                  res[k + 2] = 255;
-                  res[k + 3] = 255;
-                }
-              }
-            }
-            ctx.putImageData(imgData, 0, 0);
-          }
-        };
-
-        setInterval(function () {
-          hatchOffset = (hatchOffset + 1) % (hatchLength * 2);
-          drawBorder();
-        }, 100);
-      });
-
-      $('#button-deselect').click(function() {
-          mask = null;
-          masks = [];
-          cacheInds = [];
       });
 
       var saveButton = document.getElementById('button-save');

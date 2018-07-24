@@ -7,6 +7,11 @@
   z-index: 3;
 }
 
+.coloringAttr {
+  color:#DBD7D6;
+  font-size: 20px;
+}
+
 .coloringBody { /*contains canvas and buttons*/
   width: 900px;
   margin: 0px auto;
@@ -22,6 +27,11 @@
   height: 700px;
   width: 700px;
   margin: 0px auto;
+}
+
+#canvas-container2 {
+  top: 5000px;
+  float: right;
 }
 
 .vert-bar{
