@@ -199,8 +199,6 @@ Template.colorPage.rendered = function() {
             colorContext.fillFlood(clickX[i], clickY[i], 20);
           }   
         }
-        // colorContext.drawImage(selectedLayer, 0, 0);
-        // selectedContext.drawImage(emptyC, 0, 0);
         colorContext.globalAlpha = 1;
         lineContext.globalAlpha = 1;
       }
@@ -393,6 +391,7 @@ Template.colorPage.rendered = function() {
         clickSize.push(lineWidth);
         clickOpacity.push(opacity);
         clickCtx.push(layer);
+        clickSelect.push(selectedContext);
         
         redoX = [];
         redoY = [];
@@ -402,10 +401,7 @@ Template.colorPage.rendered = function() {
         redoSize = [];
         redoOpacity = [];
         redoCtx = [];
-        if(layer === "multiselect") {
-          clickSelect.push(selectedLayer);
-          redoSelect = [];
-        }
+        redoSelect = [];
       }
 
       
@@ -528,9 +524,9 @@ Template.colorPage.rendered = function() {
           // selectedContext.clearRect(0, 0, 700, 700);
           if(debug) {
             console.log(selectedContext);
-            console.log("selectedContext has been cleared.");
+            console.log("selectedContext has been clipped.");
           }
-          selectedContext.drawImage(emptyC, 0, 0);
+          // selectedContext.drawImage(emptyC, 0, 0);
         }
         if(debug) {
           console.log(mode);
