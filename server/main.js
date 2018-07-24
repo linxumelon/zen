@@ -37,25 +37,8 @@ Images.allow({
 		return true;
 },
 });
-/*
-Feedbacks.allow({
-	'insert': function () {
-		return true;
-  },
-  'remove': function() {
-    return true;
-	},
-	'download': function() {
-		return true;
-	}, 
-	'update' : function () {
-		return true;
-},
-});*/
 Meteor.publish("images", function publishImage(){ 
 	return Images.find(); });
-//Meteor.publish("feedbacks", function publishImage(){ 
-//	return Feedbacks.find(); });
 Meteor.startup(() => {
   // code to run on server at startup
 });
