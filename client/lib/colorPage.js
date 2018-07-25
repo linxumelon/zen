@@ -231,41 +231,27 @@ Template.colorPage.rendered = function() {
         return (imageData[pixelPos+3] > 0);
       }
 
-      function select(selectedCtx, x, y) {
-        var color;
-        if((x%4 === 0)&&(y%4 === 0)) {
-          color = 'rgba(0, 0, 0, 1)';
-        } else {
-          color = 'rgba(255, 255, 255, 0)';
-        }
-        // selectedCtx.globalAlpha = 0.2;
-        // selectedCtx.strokeStyle = 'rgb(200, 200, 200)';
-        // selectedCtx.fillRect(x, y, 1, 1);
-        selectedCtx.strokeStyle = color;
-        // selectedCtx.beginPath();
-        selectedCtx.rect(x, y, 1, 1);
-        // selectedCtx.closePath();
-        // selectedCtx.stroke();
-      }
 
-      /*function deselect(selectedCtx, x, y) {
-        var color;
-        if((x%4 === 0)&&(y%4 === 0)) {
-          color = 'rgba(0, 0, 0, 1)';
-        } else {
-          color = 'rgba(255, 255, 255, 0)';
-        }
-        selectedCtx.clearRect(x, y, 1, 1);
-      }*/
-
-
-      function setPixel (func, pixelPos, imageData, selectedCtx) {
+      function setPixel (pixelPos, imageData, selectedCtx) {
         if(debug) {
           // console.log("fillPixel has been called.");
         }
         var y = Math.floor(pixelPos/2800);
-        var x = (pixelPos/4) - y*700;
-        func(selectedCtx, x, y);
+        var x = (pixelPos/4) - y*700;      
+          var color;
+          if((x%4 === 0)&&(y%4 === 0)) {
+            color = 'rgba(0, 0, 0, 1)';
+          } else {
+            color = 'rgba(255, 255, 255, 0)';
+          }
+          // selectedCtx.globalAlpha = 0.2;
+          // selectedCtx.strokeStyle = 'rgb(200, 200, 200)';
+          // selectedCtx.fillRect(x, y, 1, 1);
+          selectedCtx.strokeStyle = color;
+          // selectedCtx.beginPath();
+          selectedCtx.rect(x, y, 1, 1);
+          // selectedCtx.closePath();
+          // selectedCtx.stroke();
         if(debug) {
           console.log("pixel set on selectedCtx");
         }
@@ -276,7 +262,7 @@ Template.colorPage.rendered = function() {
         imageData[pixelPos+3] = 1;
       }
         
-      function multiSelect(selectFunc, startX, startY, imageData, selectedCtx, canvas) {
+      function multiSelect(startX, startY, imageData, selectedCtx, canvas) {
         if(debug) {
           console.log("imageData[1]=" + imageData[1]);
           console.log(imageData);
@@ -322,7 +308,7 @@ Template.colorPage.rendered = function() {
                 if(debug) {
                   // console.log("second whileloop, y = " + y);
                 }   
-            setPixel(selectFunc, pixelPos, imageData, selectedCtx);
+            setPixel(pixelPos, imageData, selectedCtx);
             if (x > 0) {
               if (!matchOutline(pixelPos - 4, imageData)) {
                 if (!reachLeft) {
@@ -359,7 +345,7 @@ Template.colorPage.rendered = function() {
         // selectedContext.clip();
           // selectedContext.fillStyle = 'rgba(255, 255, 255, 0)';
           // selectedContext.fill();
-        selectedContext.globalAlpha = 0.2;
+        selectedContext.globalAlpha = 0.7;
         selectedContext.fillStyle = 'rgb(200, 200, 200)';
         selectedContext.fill();
         return selectedContext;
@@ -414,14 +400,11 @@ Template.colorPage.rendered = function() {
         var mouseY = e.pageY - $('#lineLayer').offset().top; 
         var selectBUD = selectBUCtx.getImageData(0, 0, 700, 700);
         if (mode === "select") {
-          selectedContext = multiSelect(select, mouseX, mouseY, selectBUD.data,
+          selectedContext = multiSelect(mouseX, mouseY, selectBUD.data,
             selectedContext, colorLayer);
           clickSelect.push([mouseX, mouseY]);
           // colorContext.drawImage(colorLayer, 0, 0);
           // selectedContext.clip();
-        } else if (mode === "deselect") {
-          selectedContext = multiSelect(deselect, mouseX, mouseY, selectBUD.data,
-            selectedContext, colorLayer);
         }
       });
 
@@ -568,30 +551,13 @@ Template.colorPage.rendered = function() {
           $('#currentMode').html(mode);
           selectedContext.clip();
           selectedContext.clearRect(0, 0, 700, 700);
-          // selectedContext.fillStyle = 'rgba(0, 0, 0, 0)';
-          // selectedContext.fill();
-          if(debug) {
-            // console.log("mode changed from select to brush");
-          }
-          // selectedContext.clearRect(0, 0, 700, 700);
-          if(debug) {
-            // console.log(selectedContext);
-            // console.log("selectedContext has been clipped.");
-          }
+          selectedContext.fillStyle = 'rgba(200, 200, 200, 0.5)';
+          selectedContext.fillRect(0, 0, 700, 700);
           // selectedContext.drawImage(emptyC, 0, 0);
         }
         if(debug) {
           console.log(mode);
         }
-        
-        // $('lineLayer').click(function() {
-          // var selectBUD = selectBUCtx.getImageData(0, 0, 700, 700);
-          // select(mouseX, mouseY, selectBUD.data,
-          //   selectedContext, colorLayer);
-          //   colorContext.drawImage(colorLayer, 0, 0);
-          //   selectedContext.drawImage(selectedLayer, 0, 0);
-          //   selectedContext.clip();
-        // })
       });
 
       $('#button-deselect').click(function() {
