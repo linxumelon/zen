@@ -540,21 +540,9 @@ Template.colorPage.rendered = function() {
       });
 
       $('#button-select').click(function() {
-        layer = 'multiselect';
-        if (mode != "select") {
           mode = "select";
           $('#currentMode').html(mode);
           paint = false;
-          
-        } else if (mode === "select"){
-          mode = "brush";
-          $('#currentMode').html(mode);
-          selectedContext.clip();
-          selectedContext.clearRect(0, 0, 700, 700);
-          selectedContext.fillStyle = 'rgba(200, 200, 200, 0.5)';
-          selectedContext.fillRect(0, 0, 700, 700);
-          // selectedContext.drawImage(emptyC, 0, 0);
-        }
         if(debug) {
           console.log(mode);
         }
@@ -562,7 +550,13 @@ Template.colorPage.rendered = function() {
 
       $('#button-deselect').click(function() {
           //mode = "deselect";
-          layer = "color";
+          mode = "brush";
+          $('#currentMode').html(mode);
+          selectedContext.clip();
+          selectedContext.clearRect(0, 0, 700, 700);
+          selectedContext.fillStyle = 'rgba(200, 200, 200, 0.5)';
+          selectedContext.fillRect(0, 0, 700, 700);
+          layer = "multiselect";
       });
 
       $('#sizeSlide').slider({
