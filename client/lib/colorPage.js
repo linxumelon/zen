@@ -3,7 +3,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 
 Template.colorPage.rendered = function() {
 
-  var debug = false;
+  var debug = true;
 
   $(function() {
       var colorLayer    = document.getElementById('colorLayer');
@@ -37,7 +37,10 @@ Template.colorPage.rendered = function() {
                 var y = Math.floor(i/2800);
                 var x = (i/4) - y*700;
                 lineCtx.strokeStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+                // lineCtx.beginPath();
                 lineCtx.rect(x, y, 1, 1);
+                // lineCtx.stroke();
+                // lineCtx.closePath();
                 selectBUCtx.fillStyle = 'rgba(255, 255, 255, 1)';
                 selectBUCtx.fillRect(x, y, 1, 1);
                 if(debug) {
@@ -71,6 +74,8 @@ Template.colorPage.rendered = function() {
       var selectedContext = selectedLayer.getContext("2d");
       var selectBUCtx = selectBUC.getContext("2d");
       var emptyCtx = emptyC.getContext("2d");
+      // emptyCtx.fillStyle = "red";
+      // emptyCtx.fillRect(0, 0, 700, 700);
     
       var colorLayerData;
       var lineLayerData;
@@ -87,6 +92,8 @@ Template.colorPage.rendered = function() {
       templateImage.onload = function() {
         console.log("loaded");
           colorContext.drawImage(templateImage, 0, 0);
+          // colorContext.fillStyle = "white";
+          // colorContext.fillRect(0, 0, 700, 700)
           pixels = colorContext.getImageData(0, 0, 700, 700);
           pixelsD = pixels.data;
           lineContext = rmWhiteP(colorLayer, colorContext, pixelsD, lineContext, selectBUCtx);
@@ -143,11 +150,11 @@ Template.colorPage.rendered = function() {
           ctx.drawImage(image, 0, 0);
           ctx.lineJoin = "round";
         }
-
+        
         canvasResetHelper(colorContext, 0, 0, 700, 700, templateImage);
         canvasResetHelper(lineContext, 0, 0, 700, 700, backUpLayer);
         // selectedContext.drawImage(selectedLayer, 0, 0);
-        // selectedContext.lineJoin = "round";
+        selectedContext.lineJoin = "round";
 
         if(clickX.length > 100000) {
         }
@@ -165,6 +172,7 @@ Template.colorPage.rendered = function() {
           ctx.strokeStyle = clickColor[i];
           ctx.lineWidth = clickSize[i];
           ctx.stroke();
+         
         }
 
         for (var i=0; i < clickX.length; i++) {  
@@ -223,20 +231,41 @@ Template.colorPage.rendered = function() {
         return (imageData[pixelPos+3] > 0);
       }
 
-      function selectPixel (pixelPos, imageData, selectedCtx) {
+      function select(selectedCtx, x, y) {
+        var color;
+        if((x%4 === 0)&&(y%4 === 0)) {
+          color = 'rgba(0, 0, 0, 1)';
+        } else {
+          color = 'rgba(255, 255, 255, 0)';
+        }
+        // selectedCtx.globalAlpha = 0.2;
+        // selectedCtx.strokeStyle = 'rgb(200, 200, 200)';
+        // selectedCtx.fillRect(x, y, 1, 1);
+        selectedCtx.strokeStyle = color;
+        // selectedCtx.beginPath();
+        selectedCtx.rect(x, y, 1, 1);
+        // selectedCtx.closePath();
+        // selectedCtx.stroke();
+      }
+
+      function deselect(selectedCtx, x, y) {
+        var color;
+        if((x%4 === 0)&&(y%4 === 0)) {
+          color = 'rgba(0, 0, 0, 1)';
+        } else {
+          color = 'rgba(255, 255, 255, 0)';
+        }
+        selectedCtx.clearRect(x, y, 1, 1);
+      }
+
+
+      function setPixel (func, pixelPos, imageData, selectedCtx) {
         if(debug) {
           // console.log("fillPixel has been called.");
         }
         var y = Math.floor(pixelPos/2800);
         var x = (pixelPos/4) - y*700;
-        var color;
-        if((x%4 === 0)&&(y%4 === 0)) {
-          color = 'rgba(0, 0, 0, 0.6)';
-        } else {
-          color = 'rgba(255, 255, 255, 0)';
-        }
-        selectedCtx.strokeStyle = color;
-        selectedCtx.strokeRect(x, y, 1, 1);
+        func(selectedCtx, x, y);
         if(debug) {
           console.log("pixel set on selectedCtx");
         }
@@ -247,7 +276,7 @@ Template.colorPage.rendered = function() {
         imageData[pixelPos+3] = 1;
       }
         
-      function select(startX, startY, imageData, selectedCtx, canvas) {
+      function multiSelect(selectFunc, startX, startY, imageData, selectedCtx, canvas) {
         if(debug) {
           console.log("imageData[1]=" + imageData[1]);
           console.log(imageData);
@@ -293,7 +322,7 @@ Template.colorPage.rendered = function() {
                 if(debug) {
                   // console.log("second whileloop, y = " + y);
                 }   
-            selectPixel(pixelPos, imageData, selectedCtx);
+            setPixel(selectFunc, pixelPos, imageData, selectedCtx);
             if (x > 0) {
               if (!matchOutline(pixelPos - 4, imageData)) {
                 if (!reachLeft) {
@@ -325,7 +354,14 @@ Template.colorPage.rendered = function() {
         if(debug) {
           console.log("selection ended.");
         }
+        // selectedContext.fillStyle = 'rgba(200, 200, 200, 0.4)';
         // selectedContext.fill();
+        // selectedContext.clip();
+          // selectedContext.fillStyle = 'rgba(255, 255, 255, 0)';
+          // selectedContext.fill();
+        selectedContext.globalAlpha = 0.2;
+        selectedContext.fillStyle = 'rgb(200, 200, 200)';
+        selectedContext.fill();
         return selectedContext;
       }
 
@@ -348,6 +384,9 @@ Template.colorPage.rendered = function() {
         if (mode === "brush") {          
           paint = true;
           addClick(mouseX, mouseY, false);
+          if(layer === "multiselect") {
+           
+          }
           redraw();
         } else if (mode === "dropper") {
           dropperHelper(layer);
@@ -371,14 +410,18 @@ Template.colorPage.rendered = function() {
       });
 
       $('#lineLayer').click(function(e) {
+        var mouseX = e.pageX - $('#lineLayer').offset().left;
+        var mouseY = e.pageY - $('#lineLayer').offset().top; 
+        var selectBUD = selectBUCtx.getImageData(0, 0, 700, 700);
         if (mode === "select") {
-          var mouseX = e.pageX - $('#lineLayer').offset().left;
-          var mouseY = e.pageY - $('#lineLayer').offset().top; 
-          var selectBUD = selectBUCtx.getImageData(0, 0, 700, 700);
-          selectedContext = select(mouseX, mouseY, selectBUD.data,
+          selectedContext = multiSelect(select, mouseX, mouseY, selectBUD.data,
             selectedContext, colorLayer);
+          clickSelect.push([mouseX, mouseY]);
           // colorContext.drawImage(colorLayer, 0, 0);
           // selectedContext.clip();
+        } else if (mode === "deselect") {
+          selectedContext = multiSelect(deselect, mouseX, mouseY, selectBUD.data,
+            selectedContext, colorLayer);
         }
       });
 
@@ -391,7 +434,7 @@ Template.colorPage.rendered = function() {
         clickSize.push(lineWidth);
         clickOpacity.push(opacity);
         clickCtx.push(layer);
-        clickSelect.push(selectedContext);
+        // clickSelect.push(selectedContext);
         
         redoX = [];
         redoY = [];
@@ -401,7 +444,7 @@ Template.colorPage.rendered = function() {
         redoSize = [];
         redoOpacity = [];
         redoCtx = [];
-        redoSelect = [];
+        // redoSelect = [];
       }
 
       
@@ -515,21 +558,25 @@ Template.colorPage.rendered = function() {
 
       $('#button-select').click(function() {
         layer = 'multiselect';
-        if (mode === "brush" || mode === "fill") {
+        if (mode != "select") {
           mode = "select";
           $('#currentMode').html(mode);
           paint = false;
+          
         } else if (mode === "select"){
           mode = "brush";
           $('#currentMode').html(mode);
           selectedContext.clip();
+          selectedContext.clearRect(0, 0, 700, 700);
+          // selectedContext.fillStyle = 'rgba(0, 0, 0, 0)';
+          // selectedContext.fill();
           if(debug) {
-            console.log("mode changed from select to brush");
+            // console.log("mode changed from select to brush");
           }
           // selectedContext.clearRect(0, 0, 700, 700);
           if(debug) {
-            console.log(selectedContext);
-            console.log("selectedContext has been clipped.");
+            // console.log(selectedContext);
+            // console.log("selectedContext has been clipped.");
           }
           // selectedContext.drawImage(emptyC, 0, 0);
         }
@@ -548,9 +595,7 @@ Template.colorPage.rendered = function() {
       });
 
       $('#button-deselect').click(function() {
-          mask = null;
-          masks = [];
-          cacheInds = [];
+          mode = "deselect";
       });
 
       $('#sizeSlide').slider({
