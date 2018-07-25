@@ -248,7 +248,7 @@ Template.colorPage.rendered = function() {
         // selectedCtx.stroke();
       }
 
-      function deselect(selectedCtx, x, y) {
+      /*function deselect(selectedCtx, x, y) {
         var color;
         if((x%4 === 0)&&(y%4 === 0)) {
           color = 'rgba(0, 0, 0, 1)';
@@ -256,7 +256,7 @@ Template.colorPage.rendered = function() {
           color = 'rgba(255, 255, 255, 0)';
         }
         selectedCtx.clearRect(x, y, 1, 1);
-      }
+      }*/
 
 
       function setPixel (func, pixelPos, imageData, selectedCtx) {
@@ -595,7 +595,8 @@ Template.colorPage.rendered = function() {
       });
 
       $('#button-deselect').click(function() {
-          mode = "deselect";
+          //mode = "deselect";
+          layer = "color";
       });
 
       $('#sizeSlide').slider({
