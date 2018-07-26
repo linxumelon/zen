@@ -397,8 +397,12 @@ Template.colorPage.rendered = function() {
         } else if (mode === "dropper") {
           dropperHelper(layer);
         } else if (mode === "fill") {
-          addClick(mouseX, mouseY, false);
-          redraw();
+          if (layer === "line") {
+            alert("Please switch to brush mode when coloring on line art")
+          } else {
+            addClick(mouseX, mouseY, false);
+            redraw();
+          }
         } 
       });
       
