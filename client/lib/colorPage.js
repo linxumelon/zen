@@ -12,6 +12,7 @@ Template.colorPage.rendered = function() {
       var selectedLayer = document.getElementById('selectedLayer');
       var selectBUC = document.createElement('canvas');
       var emptyC = document.createElement('canvas');
+      var effectLayer = document.getElementById('effectLayer');
 
       var matchOutlineColor = function(r, g, b, a){
           return (r <200 || g < 200 || b < 200 && a > 200);
@@ -66,6 +67,7 @@ Template.colorPage.rendered = function() {
       setCanvasAttr(selectedLayer, 700, 700, 'selectedLayer');
       setCanvasAttr(selectBUC, 700, 700, 'selectBUC');
       setCanvasAttr(emptyC, 700, 700, 'emptyC');
+      setCanvasAttr(effectLayer, 700, 700, 'effectLayer');
      
       //Initialize canvas context and image data
       var colorContext = colorLayer.getContext("2d");
@@ -74,6 +76,7 @@ Template.colorPage.rendered = function() {
       var selectedContext = selectedLayer.getContext("2d");
       var selectBUCtx = selectBUC.getContext("2d");
       var emptyCtx = emptyC.getContext("2d");
+      var effectContext = effectLayer.getContext('2d');
       // emptyCtx.fillStyle = "red";
       // emptyCtx.fillRect(0, 0, 700, 700);
     
@@ -261,18 +264,17 @@ Template.colorPage.rendered = function() {
         var x = (pixelPos/4) - y*700;      
           var color;
           if((x%4 === 0)&&(y%4 === 0)) {
-            color = 'rgba(0, 0, 0, 1)';
+            color = 'rgba(0, 0, 0, 0.4)';
           } else {
-            color = 'rgba(255, 255, 255, 0)';
+            color = 'rgba(255, 255, 255, 0.2)';
           }
           // selectedCtx.globalAlpha = 0.2;
           // selectedCtx.strokeStyle = 'rgb(200, 200, 200)';
           // selectedCtx.fillRect(x, y, 1, 1);
           selectedCtx.strokeStyle = color;
-          // selectedCtx.beginPath();
           selectedCtx.rect(x, y, 1, 1);
-          // selectedCtx.closePath();
-          // selectedCtx.stroke();
+          effectContext.fillStyle = color;
+          effectContext.fillRect(x, y, 1, 1);
         if(debug) {
           console.log("pixel set on selectedCtx");
         }
@@ -366,8 +368,7 @@ Template.colorPage.rendered = function() {
         // selectedContext.clip();
           // selectedContext.fillStyle = 'rgba(255, 255, 255, 0)';
           // selectedContext.fill();
-        selectedContext.globalAlpha = 0.7;
-        selectedContext.fillStyle = 'rgb(200, 200, 200)';
+        selectedContext.fillStyle = 'rgba(200, 200, 200, 0)';
         selectedContext.fill();
         return selectedContext;
       }
@@ -573,7 +574,7 @@ Template.colorPage.rendered = function() {
       $('#button-deselect').click(function() {
           mode = "brush";
           layer = "color";
-
+          effectLayer.width = effectLayer.width;
       });
 
       $('#sizeSlide').slider({
