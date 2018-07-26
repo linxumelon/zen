@@ -3,7 +3,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 
 Template.colorPage.rendered = function() {
 
-  var debug = true;
+  var debug = false;
 
   $(function() {
       var colorLayer    = document.getElementById('colorLayer');
@@ -162,7 +162,7 @@ Template.colorPage.rendered = function() {
         
         canvasResetHelper(colorContext, 0, 0, 700, 700, templateImage);
         canvasResetHelper(lineContext, 0, 0, 700, 700, backUpLayer);
-        selectedContext.drawImage(emptyC, 0, 0);
+        selectedContext.width = selectedContext.width;
         selectedContext.lineJoin = "round";
 
         if(clickX.length > 100000) {
@@ -187,7 +187,8 @@ Template.colorPage.rendered = function() {
         function checkSC() {
           if(inSelect) {
             inSelect = false;
-            selectedContext.clearRect(0, 0, 700, 700);
+            colorContext.drawImage(selectedLayer, 0, 0);
+            // selectedContext.clearRect(0, 0, 700, 700);
           }
         }
 
