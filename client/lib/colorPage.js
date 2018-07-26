@@ -450,6 +450,10 @@ Template.colorPage.rendered = function() {
           if(debug){
             console.log("Mode brush selected.")
           }
+          if (layer === "multiselect") {
+            selectedContext.clip();
+            selectedContext.clearRect(0, 0, 700, 700);
+          }
       });
 
       $('#button-fill').click(function() {
@@ -543,20 +547,16 @@ Template.colorPage.rendered = function() {
           mode = "select";
           $('#currentMode').html(mode);
           paint = false;
+          layer = "multiselect";
         if(debug) {
           console.log(mode);
         }
       });
 
       $('#button-deselect').click(function() {
-          //mode = "deselect";
           mode = "brush";
-          $('#currentMode').html(mode);
-          selectedContext.clip();
-          selectedContext.clearRect(0, 0, 700, 700);
-          selectedContext.fillStyle = 'rgba(200, 200, 200, 0.5)';
-          selectedContext.fillRect(0, 0, 700, 700);
-          layer = "multiselect";
+          layer = "color";
+
       });
 
       $('#sizeSlide').slider({
