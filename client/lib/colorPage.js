@@ -13,6 +13,7 @@ Template.colorPage.rendered = function() {
       var selectBUC = document.createElement('canvas');
       var emptyC = document.createElement('canvas');
       var effectLayer = document.getElementById('effectLayer');
+      var colorBUC = document.createElement('canvas');
 
       var matchOutlineColor = function(r, g, b, a){
           return (r <200 || g < 200 || b < 200 && a > 200);
@@ -52,7 +53,9 @@ Template.colorPage.rendered = function() {
           ctx.putImageData(imageData, 0, 0);
           lineCtx.clip();
           lineCtx.fill();
-          console.log("ok");
+          if (debug) {
+            console.log("ok");
+          }
           return lineCtx;
       }
       //Set canvas attribute
@@ -68,6 +71,7 @@ Template.colorPage.rendered = function() {
       setCanvasAttr(selectBUC, 700, 700, 'selectBUC');
       setCanvasAttr(emptyC, 700, 700, 'emptyC');
       setCanvasAttr(effectLayer, 700, 700, 'effectLayer');
+      setCanvasAttr(colorBUC, 700, 700, 'colorBUC');
      
       //Initialize canvas context and image data
       var colorContext = colorLayer.getContext("2d");
@@ -77,6 +81,7 @@ Template.colorPage.rendered = function() {
       var selectBUCtx = selectBUC.getContext("2d");
       var emptyCtx = emptyC.getContext("2d");
       var effectContext = effectLayer.getContext('2d');
+      var colorBUCtx = colorBUC.getContext("2d");
       // emptyCtx.fillStyle = "red";
       // emptyCtx.fillRect(0, 0, 700, 700);
     
@@ -95,8 +100,11 @@ Template.colorPage.rendered = function() {
       // emptyCtx.fillRect(0, 0, 700, 700);
 
       templateImage.onload = function() {
-        console.log("loaded");
-          colorContext.drawImage(templateImage, 0, 0);
+        if (debug) {
+          console.log("loaded");
+        }
+          colorBUCtx.drawImage(templateImage, 0, 0);
+          colorContext.drawImage(colorBUC, 0, 0);
           // colorContext.fillStyle = "white";
           // colorContext.fillRect(0, 0, 700, 700)
           pixels = colorContext.getImageData(0, 0, 700, 700);
@@ -150,6 +158,7 @@ Template.colorPage.rendered = function() {
       var redoSelect = new Array();
 
       var inSelect;
+      var numOfOp = 0;
 
       
       function redraw(){
@@ -160,7 +169,7 @@ Template.colorPage.rendered = function() {
           ctx.lineJoin = "round";
         }
         
-        canvasResetHelper(colorContext, 0, 0, 700, 700, templateImage);
+        canvasResetHelper(colorContext, 0, 0, 700, 700, colorBUC);
         canvasResetHelper(lineContext, 0, 0, 700, 700, backUpLayer);
         selectedContext.width = selectedContext.width;
         selectedContext.lineJoin = "round";
@@ -199,13 +208,19 @@ Template.colorPage.rendered = function() {
               console.log("x = " + clickX[i] + ", y = " + clickY[i]);
             }
             if (clickCtx[i] === "color") {
-              console.log("color");
+              if(debug) {
+                console.log("color");
+              }
               brushHelper(colorContext, i);
             } else if (clickCtx[i] === "line") {
+              if(debug) {
               console.log("line");
+              }
               brushHelper(lineContext, i);
             } else if (clickCtx[i] === "multiselect") {
-              console.log("multiselect");
+              if(debug) {
+                console.log("multiselect");
+              }
               brushHelper(selectedContext, i);
             }
           } else if (clickMode[i] === "fill") {
@@ -417,6 +432,7 @@ Template.colorPage.rendered = function() {
 
       $('#lineLayer').mouseup(function(e){
         paint = false;
+        numOfOp++;
       });
 
       $('#lineLayer').click(function(e) {
@@ -481,6 +497,7 @@ Template.colorPage.rendered = function() {
 
       $('#button-fill').click(function() {
           mode = "fill";
+          layer = "color";
           $('#currentMode').html(mode);
           if(debug){
             console.log("Mode fill selected.");
@@ -488,12 +505,18 @@ Template.colorPage.rendered = function() {
       });
 
       $('#button-line-layer').click(function() {
+          if(debug) {
           console.log("linelayer");
+          }
+          mode = "brush";
           layer = "line";
       });
 
       $('#button-color-layer').click(function() {
+        if(debug) {
           console.log("colorLayer");
+        }
+          mode = "brush";
           layer = "color";
       });
 
@@ -536,6 +559,9 @@ Template.colorPage.rendered = function() {
 
       $('#button-redo').click(function() {
         redo();
+        if (numOfOp >= 0) {
+          numOfOp--;
+        }
         function redo() {
           clickX.push(redoX.pop());
           clickY.push(redoY.pop());

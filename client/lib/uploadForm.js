@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import {$,jQuery} from 'meteor/jquery';
 import imageStore from '../../commons/collection.js';
-var debug = true;
+var debug = false;
 
 Meteor.subscribe('images');
 Template.uploadForm.events({
