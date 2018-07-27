@@ -1,8 +1,8 @@
 <template name="uploadForm">
 	
     <div class="uploadContainer">
-      <p> Upload an image from your computer</p>
-      <form method="POST">
+      <p> Upload lineart from your computer</p>
+      <form method="POST" id="lineForm">
         <input type="file" name="uploadedImage" id="fileInput">
         <p><input  type="checkbox" name="shareSettings" id="shareSettings"/> Make this template public</p>
         <input type="submit" value="Upload">    
@@ -16,6 +16,25 @@
       </div>
       {{/each}} -->
     </div>
-  
+
+    <div style="height: 100px"></div>
+
+    <div class="uploadContainer">
+      <p> Upload colored pictures completed on our website</p>
+      <form method="POST" id="colorForm">
+        <input type="file" name="uploadedColoredImage" id="coloredFileInput">
+        <p> Your name: </p>
+        <input type="text" id="name" >
+        <input type="submit" value="Upload">    
+        <!-- <input type="submit" id="startColoring" value="Start Coloring"/> -->
+      </form>
+      <!-- {{#each images}}
+      <p>true</p>
+      <div>
+          <img src="{{this.url}}" alt="sample"/>
+        
+      </div>
+      {{/each}} -->
+    </div>
 </template>
 
