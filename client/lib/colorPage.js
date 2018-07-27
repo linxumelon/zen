@@ -130,36 +130,45 @@ Template.colorPage.rendered = function() {
       };
 
       //Initialize paint feature var
-      var mode = "brush"; //"fill" is fill mode, "dropper" is eyedropper
-      var lineWidth = 50;
-      var opacity = 100; //percent
-      var color = "#df4b26";
-      var paint = false;
-      var layer = "color";
-
-
-      var clickX = new Array();
-      var clickY = new Array();
-      var clickDrag = new Array();
-      var clickMode = new Array();
-      var clickColor = new Array();
-      var clickSize = new Array();
-      var clickOpacity = new Array();
-      var clickCtx = new Array();
-      var clickSelect = new Array();//context of selected area
-
-      var redoX = new Array();
-      var redoY = new Array();
-      var redoDrag = new Array();
-      var redoMode = new Array();
-      var redoColor = new Array();
-      var redoSize = new Array();
-      var redoOpacity = new Array();
-      var redoCtx = new Array();
-      var redoSelect = new Array();
-
+      var mode, lineWidth, opacity, color, paint, layer;
+      var clickX, clickY, clickDrag, clickMode, clickColor, clickSize, clickOpacity, clickCtx, clickSelect;
+      var redoX, redoY, redoDrag, redoMode, redoColor, redoSize, redoOpacity, redoCtx, redoSelect;
       var inSelect;
       var numOfOp = 0;
+
+      initRedraw();
+      function initRedraw() {
+              //Initialize paint feature var
+        mode = "brush"; //"fill" is fill mode, "dropper" is eyedropper
+        lineWidth = 50;
+        opacity = 100; //percent
+        color = "#df4b26";
+        paint = false;
+        layer = "color";
+
+        clickX = new Array();
+        clickY = new Array();
+        clickDrag = new Array();
+        clickMode = new Array();
+        clickColor = new Array();
+        clickSize = new Array();
+        clickOpacity = new Array();
+        clickCtx = new Array();
+        clickSelect = new Array();//context of selected area
+
+        redoX = new Array();
+        redoY = new Array();
+        redoDrag = new Array();
+        redoMode = new Array();
+        redoColor = new Array();
+        redoSize = new Array();
+        redoOpacity = new Array();
+        redoCtx = new Array();
+        redoSelect = new Array();
+
+        inSelect = false;
+        numOfOp = 0;
+      }
 
       
       function redraw(){
@@ -197,7 +206,7 @@ Template.colorPage.rendered = function() {
         function checkSC() {
           if(inSelect) {
             inSelect = false;
-            colorContext.drawImage(selectedLayer, 0, 0);
+            // colorContext.drawImage(selectedLayer, 0, 0);
             // selectedContext.clearRect(0, 0, 700, 700);
           }
         }
@@ -248,15 +257,7 @@ Template.colorPage.rendered = function() {
               selectedContext, colorLayer);
           }   
         }
-        if ((numOfOp % 17) === 0) {
-          colorBUCtx.drawImage(colorBUC, 0, 0);
-          colorBUCtx.drawImage(colorLayer, 0, 0);
-          backUpContext.drawImage(backUpLayer, 0, 0);
-          backUpContext.drawImage(lineLayer, 0, 0);
-          if(debug2) {
-            console.log("numOfOp = " + numOfOp);
-          }
-        }
+
         colorContext.globalAlpha = 1;
         lineContext.globalAlpha = 1;
       }
@@ -443,6 +444,16 @@ Template.colorPage.rendered = function() {
       $('#lineLayer').mouseup(function(e){
         paint = false;
         numOfOp++;
+        if ((numOfOp % 17) === 0) {
+          colorBUCtx.drawImage(colorBUC, 0, 0);
+          colorBUCtx.drawImage(colorLayer, 0, 0);
+          backUpContext.drawImage(backUpLayer, 0, 0);
+          backUpContext.drawImage(lineLayer, 0, 0);
+          initRedraw();
+          if(debug2) {
+            console.log("numOfOp = " + numOfOp);
+          }
+        }
         if(debug2) {
           console.log("numOfOp = " + numOfOp);
         }
