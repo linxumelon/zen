@@ -4,7 +4,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 Template.colorPage.rendered = function() {
 
   var debug = false;
-  var debug2 = true;
+  var debug2 = false;
 
   $(function() {
       var colorLayer    = document.getElementById('colorLayer');
