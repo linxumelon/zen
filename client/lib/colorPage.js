@@ -4,6 +4,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 Template.colorPage.rendered = function() {
 
   var debug = false;
+  var debug2 = true;
 
   $(function() {
       var colorLayer    = document.getElementById('colorLayer');
@@ -247,6 +248,15 @@ Template.colorPage.rendered = function() {
               selectedContext, colorLayer);
           }   
         }
+        if ((numOfOp % 17) === 0) {
+          colorBUCtx.drawImage(colorBUC, 0, 0);
+          colorBUCtx.drawImage(colorLayer, 0, 0);
+          backUpContext.drawImage(backUpLayer, 0, 0);
+          backUpContext.drawImage(lineLayer, 0, 0);
+          if(debug2) {
+            console.log("numOfOp = " + numOfOp);
+          }
+        }
         colorContext.globalAlpha = 1;
         lineContext.globalAlpha = 1;
       }
@@ -433,6 +443,9 @@ Template.colorPage.rendered = function() {
       $('#lineLayer').mouseup(function(e){
         paint = false;
         numOfOp++;
+        if(debug2) {
+          console.log("numOfOp = " + numOfOp);
+        }
       });
 
       $('#lineLayer').click(function(e) {
