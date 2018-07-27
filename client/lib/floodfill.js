@@ -17,6 +17,11 @@ var floodfill = (function() {
 		if(debug) {
 			console.log("startcolor = " + startcolor);
 		}
+		if (Math.abs(startcolor[0] - fillcolor.r)<=tolerance &&
+		    Math.abs(startcolor[1] - fillcolor.g)<=tolerance &&
+		    Math.abs(startcolor[2] - fillcolor.b)<=tolerance) {
+				return data;
+			}
 
 		if(!pixelCompare(i,startcolor, fillcolor,data,length,tolerance)) { return false; }
 		Q.push(i);
@@ -114,7 +119,7 @@ var floodfill = (function() {
 
 		var xi = Math.floor(x);
 		var yi = Math.floor(y);
-
+     
 		if (xi!==x) console.warn("x truncated from",x,"to",xi);
 		if (yi!==y) console.warn("y truncated from",y,"to",yi);
 

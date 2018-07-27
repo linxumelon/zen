@@ -523,6 +523,7 @@ Template.colorPage.rendered = function() {
           }
           mode = "brush";
           layer = "line";
+          $('#currentMode').html(mode);
       });
 
       $('#button-color-layer').click(function() {
@@ -531,6 +532,7 @@ Template.colorPage.rendered = function() {
         }
           mode = "brush";
           layer = "color";
+          $('#currentMode').html(mode);
       });
 
       $('#button-eyedrop').click(function() {    
