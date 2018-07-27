@@ -60,6 +60,7 @@
     border-color: black;
     font-size: 25px;
     height: 53px;
+    width: 70px;
     padding: 0px 0px; /* Some padding */
     cursor: pointer; /* Pointer/hand icon */
     float: left; /* Float the buttons side by side */

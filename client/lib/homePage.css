@@ -10,17 +10,17 @@
   
 }
 img[src*="sample"] {
-  width: 100%;
+  width: 80%;
 }
 #right {
   width: 55%;
   float: left;
-  margin-top: 200px;
-  left: 500px;
-  position: absolute;
+  top: 80px;
+  left: -250px;
+  position: relative;
 }
 #right ul .subTheme {
-    font-size:35px;
+    font-size:50px;
     color: grey;
     padding: 0;
     position: relative;
@@ -31,14 +31,16 @@ img[src*="sample"] {
   width:70px;
   height:80px; 
   border: 50px;
+  right: -5px;
 }
 
 #right ul .descTheme {
+    top: 3px;
     font-family: arial;
-    font-size: 15px;
+    font-size: 20px;
     color: #999999;
     position: relative;
-    left: 70px;
+    left: 8px;
     bottom: 30px;
 }
 
@@ -56,8 +58,8 @@ img[src*="sample"] {
 .buttons {
   width: 800px;
   position: absolute;
-  left: 500px;
-  margin-top: 750px;
+  left: 800px;
+  top: 20px;
 }
 
 .buttons button:hover {
