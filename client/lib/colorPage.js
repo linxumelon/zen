@@ -4,7 +4,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 Template.colorPage.rendered = function() {
 
   var debug = false;
-  var debug2 = false;
+  var debug2 = true;
 
   $(function() {
       var colorLayer    = document.getElementById('colorLayer');
@@ -170,6 +170,31 @@ Template.colorPage.rendered = function() {
         numOfOp = 0;
       }
 
+      function adjustRedraw() {
+        clickX.shift();
+        clickY.shift();
+        clickDrag.shift();
+        clickMode.shift();
+        clickColor.shift();
+        clickSize.shift();
+        clickOpacity.shift();
+        clickCtx.shift();
+        clickSelect.shift();
+
+        redoX.shift();
+        redoY.shift();
+        redoDrag.shift();
+        redoMode.shift();
+        redoColor.shift();
+        redoSize.shift();
+        redoOpacity.shift();
+        redoCtx.shift();
+        redoSelect.shift();
+
+        inSelect = false;
+        numOfOp--;
+}
+
       
       function redraw(){
 
@@ -255,7 +280,18 @@ Template.colorPage.rendered = function() {
             }
             selectedContext = multiSelect(clickX[i], clickY[i], selectBUD.data,
               selectedContext, colorLayer);
-          }   
+          }
+          if (numOfOp >= 15) {
+            if(i === 1) {
+              colorBUCtx.drawImage(colorBUC, 0, 0);
+              colorBUCtx.drawImage(colorLayer, 0, 0);
+              backUpContext.drawImage(backUpLayer, 0, 0);
+              backUpContext.drawImage(lineLayer, 0, 0);
+              if(debug2) {
+                console.log("numOfOp = " + numOfOp);
+              }
+          }
+        }   
         }
 
         colorContext.globalAlpha = 1;
@@ -444,15 +480,8 @@ Template.colorPage.rendered = function() {
       $('#lineLayer').mouseup(function(e){
         paint = false;
         numOfOp++;
-        if ((numOfOp % 17) === 0) {
-          colorBUCtx.drawImage(colorBUC, 0, 0);
-          colorBUCtx.drawImage(colorLayer, 0, 0);
-          backUpContext.drawImage(backUpLayer, 0, 0);
-          backUpContext.drawImage(lineLayer, 0, 0);
-          initRedraw();
-          if(debug2) {
-            console.log("numOfOp = " + numOfOp);
-          }
+        if(numOfOp >= 17) {
+          adjustRedraw();
         }
         if(debug2) {
           console.log("numOfOp = " + numOfOp);
