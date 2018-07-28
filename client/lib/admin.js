@@ -7,8 +7,4 @@ Template.admin.helpers({
     return Images.find({"metadata.isFeedback": "true"});
     },
 
-    privateImages: function() {
-    	console.log(Meteor.userId());
-    return Images.find({"metadata.ownerId": Meteor.userId()});
-    }
 });

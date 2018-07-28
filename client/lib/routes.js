@@ -74,3 +74,13 @@ FlowRouter.route( '/admin', {
 	},
 	name: 'admin'
 });
+
+FlowRouter.route( '/gallery', {
+	action: function() {
+		BlazeLayout.render( 'applicationLayout', {
+			header: 'headerTemplate',
+			main: 'coloredArt'
+		});
+	},
+	name: 'gallery'
+});

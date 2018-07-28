@@ -1,0 +1,17 @@
+<template name="coloredArt">
+	<div class="body">
+		
+		<p> Colored artworks </p>
+		<div class = "pure-g" id="public">
+			{{#each coloredimages}}
+			<div class = "pure-u-1-4">
+				<!--<a href="{{this.url}}" target="_blank">-->
+				<div class = "img">	
+					<img src="{{this.url store='thumbs' alt="" class="thumbnail"}}"/>
+					<div><p>Uploaded by: {{this.metadata.message}}</p></div>
+				</div>
+			</div>
+			{{/each}}
+		</div>
+	</div>
+</template>

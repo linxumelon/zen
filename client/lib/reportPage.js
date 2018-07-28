@@ -16,6 +16,7 @@ Template.reportPage.events({
 			public: "false",
 			ownerId: "nil",
 			isFeedback: "true",
+			isColored: "false",
 			message: text
 		};
 		console.log(fsFile.metadata.message);

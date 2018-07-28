@@ -6,7 +6,7 @@ var debug = false;
 
 Meteor.subscribe('images');
 Template.uploadForm.events({
-	'submit form': function(event) {
+	'submit #lineForm': function(event) {
 		event.preventDefault();
 		isPublic = document.getElementById("shareSettings").checked;
 		var newFile = event.target.fileInput;
@@ -27,7 +27,8 @@ Template.uploadForm.events({
 					public: "true",
 					ownerId: Meteor.userId(),
 					isFeedback: "false",
-					message: "text"
+					message: "text",
+					isColored: "false"
 				};
 			} else {
 				console.log("private"+Meteor.userId());
@@ -35,7 +36,8 @@ Template.uploadForm.events({
 					public: "false",
 					ownerId: Meteor.userId(),
 					isFeedback: "false",
-					message: "text"
+					message: "text",
+					isColored: "false"
 				};
 			}
 	
@@ -77,6 +79,41 @@ Template.uploadForm.events({
 			//FlowRouter.go("/color", params, queryParams);
 			alert("Successfully uploaded!");
 		// });
+	},
+
+	'submit #colorForm': function(event) {
+		event.preventDefault();
+		text = document.getElementById("name").value;
+		var newFile = event.target.fileInput;
+		var tempFile = document.getElementById('coloredFileInput');
+		var file = tempFile.files[0];
+		console.log(typeof(file));
+		fsFile = new FS.File(file);
+		fsFile.metadata = {
+			public: "false",
+			ownerId: "nil",
+			isFeedback: "false",
+			isColored: "true",
+			message: text
+		};
+		console.log(fsFile.metadata.message);
+		Images.insert(fsFile, function (err, result) {
+				if (err) {
+					console.log("error" + err.reason);
+				} else {
+					console.log(result);
+					// var userId = Meteor.userId();
+					// var imagesURL = {
+					// 	"startColoring.image": "cfs/files/images" + filOebj_.id
+					// };
+					// Meteor.users.update(userId ,{$seL: imagesURL});
+					Images.on('uploaded', function (fileObj) {
+						console.log("image uploaded");
+					});
+				}
+
+			});
+		alert("Image uploaded!");
 	}
 	
 	// "submit #startColoring": function(event) {
