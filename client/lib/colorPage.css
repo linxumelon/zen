@@ -18,17 +18,21 @@
   width: 900px;
   margin: 0px auto;
   top: 130px;
-  float: top;
+  left: 200px;
+  float: left;
   position: relative;
 }
 
 #canvas-container { /*canvas itself*/
-  float: left;
+  float: right;
   background-color: "white";
-  position: relative;
-  height: 700px;
-  width: 700px;
+  position: absolute;
+  left: 200px;
+  top: 52px; 
+  height: 706px;
+  width: 706px;
   margin: 0px auto;
+  border: 3px solid #8b4c40;
 }
 
 #canvas-container2 {
@@ -60,7 +64,6 @@
     border-color: black;
     font-size: 25px;
     height: 53px;
-    width: 70px;
     padding: 0px 0px; /* Some padding */
     cursor: pointer; /* Pointer/hand icon */
     float: left; /* Float the buttons side by side */
