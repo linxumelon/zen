@@ -282,7 +282,7 @@ Template.colorPage.rendered = function() {
               selectedContext, colorLayer);
           }
           if (numOfOp >= 15) {
-            if(i === 1) {
+            if(i === 0) {
               colorBUCtx.drawImage(colorBUC, 0, 0);
               colorBUCtx.drawImage(colorLayer, 0, 0);
               backUpContext.drawImage(backUpLayer, 0, 0);
@@ -480,7 +480,7 @@ Template.colorPage.rendered = function() {
       $('#lineLayer').mouseup(function(e){
         paint = false;
         numOfOp++;
-        if(numOfOp >= 17) {
+        if(numOfOp >= 15) {
           adjustRedraw();
         }
         if(debug2) {
