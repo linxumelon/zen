@@ -480,7 +480,7 @@ Template.colorPage.rendered = function() {
       $('#lineLayer').mouseup(function(e){
         paint = false;
         numOfOp++;
-        if(numOfOp >= 15) {
+        if(numOfOp >= 16) {
           adjustRedraw();
         }
         if(debug2) {
